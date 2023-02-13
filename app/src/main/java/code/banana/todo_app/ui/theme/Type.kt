@@ -1,4 +1,4 @@
-package code.banana.noteapp.ui.theme
+package code.banana.todo_app.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
