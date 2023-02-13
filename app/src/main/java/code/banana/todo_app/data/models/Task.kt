@@ -8,7 +8,7 @@ import code.banana.todo_app.util.Constants
  * Created by Maksym Kovalchuk on 2/13/2023.
  */
 @Entity(tableName = Constants.DATABASE_TABLE)
-data class ToDoTask(
+data class Task(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val title: String,
