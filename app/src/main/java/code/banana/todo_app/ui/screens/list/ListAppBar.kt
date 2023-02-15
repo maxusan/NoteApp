@@ -19,6 +19,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import code.banana.todo_app.R
+import code.banana.todo_app.components.DisplayAlertDialog
 import code.banana.todo_app.components.PriorityItem
 import code.banana.todo_app.data.models.Priority
 import code.banana.todo_app.ui.theme.MEDIUM_PADDING
@@ -26,6 +27,7 @@ import code.banana.todo_app.ui.theme.TOP_APP_BAR_HEIGHT
 import code.banana.todo_app.ui.theme.topAppBarBackgroundColor
 import code.banana.todo_app.ui.theme.topAppBarContentColor
 import code.banana.todo_app.ui.viewmodels.SharedViewModel
+import code.banana.todo_app.util.Action
 import code.banana.todo_app.util.SearchAppBarState
 import code.banana.todo_app.util.TrailingIconState
 
@@ -34,30 +36,23 @@ import code.banana.todo_app.util.TrailingIconState
  */
 @Composable
 fun ListAppBar(
-    viewModel: SharedViewModel,
-    searchAppBarState: SearchAppBarState,
-    searchTextState: String
+    viewModel: SharedViewModel, searchAppBarState: SearchAppBarState, searchTextState: String
 ) {
     when (searchAppBarState) {
         SearchAppBarState.CLOSED -> {
-            DefaultListAppBar(
-                onSearchClicked = {
-                    viewModel.searchAppBarState.value = SearchAppBarState.OPENED
-                },
+            DefaultListAppBar(onSearchClicked = {
+                viewModel.searchAppBarState.value = SearchAppBarState.OPENED
+            },
                 onSortClicked = {},
-                onDeleteClicked = {}
-            )
+                onDeleteAllConfirmed = { viewModel.action.value = Action.DELETE_ALL })
         }
         else -> {
-            SearchAppBar(text = searchTextState,
-                onTextChange = {
-                    viewModel.searchTextState.value = it
-                },
-                onCloseClicked = {
-                    viewModel.searchAppBarState.value = SearchAppBarState.CLOSED
-                    viewModel.searchTextState.value = ""
-                },
-                onSearchClicked = {})
+            SearchAppBar(text = searchTextState, onTextChange = {
+                viewModel.searchTextState.value = it
+            }, onCloseClicked = {
+                viewModel.searchAppBarState.value = SearchAppBarState.CLOSED
+                viewModel.searchTextState.value = ""
+            }, onSearchClicked = { viewModel.searchDatabase(searchQuery = it) })
         }
     }
 
@@ -66,37 +61,44 @@ fun ListAppBar(
 
 @Composable
 fun DefaultListAppBar(
-    onSearchClicked: () -> Unit,
-    onSortClicked: (Priority) -> Unit,
-    onDeleteClicked: () -> Unit
+    onSearchClicked: () -> Unit, onSortClicked: (Priority) -> Unit, onDeleteAllConfirmed: () -> Unit
 ) {
-    TopAppBar(
-        title = {
-            Text(
-                text = stringResource(id = R.string.list_screen_title),
-                color = MaterialTheme.colors.topAppBarContentColor
-            )
-        },
-        actions = {
-            ListAppBarActions(
-                onSearchClicked = onSearchClicked,
-                onSortClicked = onSortClicked,
-                onDeleteClicked = onDeleteClicked
-            )
-        },
-        backgroundColor = MaterialTheme.colors.topAppBarBackgroundColor
+    TopAppBar(title = {
+        Text(
+            text = stringResource(id = R.string.list_screen_title),
+            color = MaterialTheme.colors.topAppBarContentColor
+        )
+    }, actions = {
+        ListAppBarActions(
+            onSearchClicked = onSearchClicked,
+            onSortClicked = onSortClicked,
+            onDeleteAllConfirmed = onDeleteAllConfirmed
+        )
+    }, backgroundColor = MaterialTheme.colors.topAppBarBackgroundColor
     )
 }
 
 @Composable
 fun ListAppBarActions(
-    onSearchClicked: () -> Unit,
-    onSortClicked: (Priority) -> Unit,
-    onDeleteClicked: () -> Unit
+    onSearchClicked: () -> Unit, onSortClicked: (Priority) -> Unit, onDeleteAllConfirmed: () -> Unit
 ) {
+    var openDialog by remember {
+        mutableStateOf(false)
+    }
+    DisplayAlertDialog(title = stringResource(id = R.string.delete_all_tasks),
+        message = stringResource(
+            id = R.string.are_you_sure
+        ),
+        openDialog = openDialog,
+        closeDialog = { openDialog = false },
+        onYesClicked = {
+            onDeleteAllConfirmed()
+        })
     SearchAction(onSearchClicked = onSearchClicked)
     SortAction(onSortClicked = onSortClicked)
-    DeleteAllAction(onDeleteClicked = onDeleteClicked)
+    DeleteAllAction(onDeleteAllConfirmed = {
+        openDialog = true
+    })
 }
 
 @Composable
@@ -143,7 +145,7 @@ fun SortAction(onSortClicked: (Priority) -> Unit) {
 
 @Composable
 fun DeleteAllAction(
-    onDeleteClicked: () -> Unit
+    onDeleteAllConfirmed: () -> Unit
 ) {
     var expanded by remember {
         mutableStateOf(false)
@@ -157,11 +159,10 @@ fun DeleteAllAction(
         DropdownMenu(expanded = expanded, onDismissRequest = {
             expanded = false
         }) {
-            DropdownMenuItem(
-                onClick = {
-                    expanded = false
-                    onDeleteClicked()
-                }) {
+            DropdownMenuItem(onClick = {
+                expanded = false
+                onDeleteAllConfirmed()
+            }) {
                 Text(
                     modifier = Modifier.padding(start = MEDIUM_PADDING),
                     text = stringResource(id = R.string.delete_all_action),
@@ -200,9 +201,18 @@ fun SearchAppBar(
         elevation = AppBarDefaults.TopAppBarElevation,
         color = MaterialTheme.colors.topAppBarBackgroundColor
     ) {
-        TextField(modifier = Modifier.fillMaxWidth(), value = text, onValueChange = {
-            onTextChange(it)
-        }, placeholder = { Text(text = stringResource(id = R.string.search_placeholder_text), color = Color.White) },
+        TextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = text,
+            onValueChange = {
+                onTextChange(it)
+            },
+            placeholder = {
+                Text(
+                    text = stringResource(id = R.string.search_placeholder_text),
+                    color = Color.White
+                )
+            },
             textStyle = TextStyle(
                 color = MaterialTheme.colors.topAppBarContentColor,
                 fontSize = MaterialTheme.typography.subtitle1.fontSize
@@ -216,25 +226,23 @@ fun SearchAppBar(
                         tint = MaterialTheme.colors.topAppBarContentColor
                     )
                 }
-            }, trailingIcon = {
-                IconButton(
-                    onClick = {
-                        when (trailingIconState) {
-                            TrailingIconState.READY_TO_DELETE -> {
-                                onTextChange("")
-                                trailingIconState = TrailingIconState.READY_TO_CLOSE
-                            }
-                            TrailingIconState.READY_TO_CLOSE -> {
-                                if (text.isNotBlank())
-                                    onTextChange("")
-                                else {
-                                    onCloseClicked()
-                                    trailingIconState = TrailingIconState.READY_TO_DELETE
-                                }
+            },
+            trailingIcon = {
+                IconButton(onClick = {
+                    when (trailingIconState) {
+                        TrailingIconState.READY_TO_DELETE -> {
+                            onTextChange("")
+                            trailingIconState = TrailingIconState.READY_TO_CLOSE
+                        }
+                        TrailingIconState.READY_TO_CLOSE -> {
+                            if (text.isNotBlank()) onTextChange("")
+                            else {
+                                onCloseClicked()
+                                trailingIconState = TrailingIconState.READY_TO_DELETE
                             }
                         }
                     }
-                ) {
+                }) {
                     Icon(
                         imageVector = Icons.Filled.Close,
                         contentDescription = stringResource(id = R.string.close_icon),
@@ -245,9 +253,7 @@ fun SearchAppBar(
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Search
             ),
-            keyboardActions = KeyboardActions(
-                onSearch = { onSearchClicked(text) }
-            ),
+            keyboardActions = KeyboardActions(onSearch = { onSearchClicked(text) }),
             colors = TextFieldDefaults.textFieldColors(
                 cursorColor = MaterialTheme.colors.topAppBarContentColor,
                 focusedIndicatorColor = Color.Transparent,
@@ -262,18 +268,11 @@ fun SearchAppBar(
 @Preview
 @Composable
 fun SearchAppBarPreview() {
-    SearchAppBar(text = "Search",
-        onTextChange = {},
-        onCloseClicked = { },
-        onSearchClicked = {})
+    SearchAppBar(text = "Search", onTextChange = {}, onCloseClicked = { }, onSearchClicked = {})
 }
 
 @Preview
 @Composable
 fun DefaultListAppBarPreview() {
-    DefaultListAppBar(
-        onSearchClicked = {},
-        onSortClicked = {},
-        onDeleteClicked = {}
-    )
+    DefaultListAppBar(onSearchClicked = {}, onSortClicked = {}, onDeleteAllConfirmed = {})
 }

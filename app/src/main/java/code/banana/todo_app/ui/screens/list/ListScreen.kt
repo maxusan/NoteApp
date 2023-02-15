@@ -31,6 +31,7 @@ fun ListScreen(
     }
     val action by viewModel.action
     val allTasks by viewModel.allTasks.collectAsState()
+    val searchedTasks by viewModel.searchedTasks.collectAsState()
     val searchAppBarState: SearchAppBarState by viewModel.searchAppBarState
     val searchTextState: String by viewModel.searchTextState
 
@@ -52,13 +53,15 @@ fun ListScreen(
             ListAppBar(
                 viewModel = viewModel,
                 searchAppBarState = searchAppBarState,
-                searchTextState
+                searchTextState = searchTextState
             )
         },
         content = {
             ListContent(
                 modifier = Modifier.padding(it),
-                allTasks,
+                searchAppBarState = searchAppBarState,
+                allTasks = allTasks,
+                searchTasks = searchedTasks,
                 navigateToTaskScreen = navigateToTaskScreen
             )
         },
@@ -99,7 +102,7 @@ fun DisplaySnackBar(
             scope.launch {
                 val snackBarResult =
                     scaffoldState.snackbarHostState.showSnackbar(
-                        message = "${action.name} : $taskTitle",
+                        message = setMessage(action = action, taskTitle = taskTitle),
                         actionLabel = setActionLabel(action)
                     )
                 undoDeletedTask(
@@ -109,6 +112,16 @@ fun DisplaySnackBar(
                 )
             }
         }
+    }
+}
+
+private fun setMessage(
+    action: Action,
+    taskTitle: String
+): String {
+    return when (action) {
+        Action.DELETE_ALL -> "All tasks removed"
+        else -> "${action.name} : $taskTitle"
     }
 }
 
