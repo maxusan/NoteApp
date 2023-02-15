@@ -19,6 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import code.banana.todo_app.R
 import code.banana.todo_app.ui.theme.fabBackgroundColor
 import code.banana.todo_app.ui.viewmodels.SharedViewModel
+import code.banana.todo_app.util.Action
 import code.banana.todo_app.util.SearchAppBarState
 
 /**
@@ -28,14 +29,17 @@ import code.banana.todo_app.util.SearchAppBarState
 @Composable
 fun ListScreen(
     navigateToTaskScreen: (taskId: Int) -> Unit,
-    viewModel: SharedViewModel
+    viewModel: SharedViewModel,
 ) {
     LaunchedEffect(key1 = true) {
         viewModel.getAllTasks()
     }
-    val allTasks = viewModel.allTasks.collectAsState()
+    val action by viewModel.action
+    val allTasks by viewModel.allTasks.collectAsState()
     val searchAppBarState: SearchAppBarState by viewModel.searchAppBarState
     val searchTextState: String by viewModel.searchTextState
+
+    viewModel.handleDatabaseActions(action = action)
 
     Scaffold(
         topBar = {
@@ -46,9 +50,7 @@ fun ListScreen(
             )
         },
         content = {
-            ListContent(modifier = Modifier.padding(it), allTasks.value, navigateToTaskScreen = {
-
-            })
+            ListContent(modifier = Modifier.padding(it), allTasks, navigateToTaskScreen = navigateToTaskScreen)
         },
         floatingActionButton = {
             ListFab(onFabClicked = navigateToTaskScreen)

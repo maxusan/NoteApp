@@ -18,12 +18,32 @@ import androidx.compose.ui.tooling.preview.Preview
 import code.banana.todo_app.data.models.Priority
 import code.banana.todo_app.data.models.Task
 import code.banana.todo_app.ui.theme.*
+import code.banana.todo_app.util.RequestState
 
 /**
  * Created by Maksym Kovalchuk on 2/14/2023.
  */
 @Composable
 fun ListContent(
+    modifier: Modifier = Modifier,
+    allTasks: RequestState<List<Task>>,
+    navigateToTaskScreen: (taskId: Int) -> Unit
+) {
+    if (allTasks is RequestState.Success) {
+        if (allTasks.data.isEmpty()) {
+            EmptyContent()
+        } else {
+            DisplayTasks(
+                modifier = modifier,
+                allTasks = allTasks.data,
+                navigateToTaskScreen = navigateToTaskScreen
+            )
+        }
+    }
+}
+
+@Composable
+fun DisplayTasks(
     modifier: Modifier = Modifier,
     allTasks: List<Task>,
     navigateToTaskScreen: (taskId: Int) -> Unit

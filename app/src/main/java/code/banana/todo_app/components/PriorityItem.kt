@@ -19,8 +19,8 @@ import code.banana.todo_app.ui.theme.PRIORITY_INDICATOR_SIZE
  * Created by Maksym Kovalchuk on 2/14/2023.
  */
 @Composable
-fun PriorityItem(priority: Priority) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+fun PriorityItem(priority: Priority, modifier: Modifier = Modifier) {
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier) {
         Canvas(modifier = Modifier.size(PRIORITY_INDICATOR_SIZE)) {
             drawCircle(color = priority.color)
         }

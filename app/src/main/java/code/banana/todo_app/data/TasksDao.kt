@@ -14,7 +14,7 @@ interface TasksDao {
     fun getAllTasks(): Flow<List<Task>>
 
     @Query("SELECT * FROM todo_table WHERE id =:taskId")
-    fun getSelectedTask(taskId: Int): Flow<Task>
+    fun getSelectedTask(taskId: Int): Flow<Task?>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addTAsk(task: Task)
