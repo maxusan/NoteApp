@@ -91,7 +91,7 @@ class SharedViewModel @Inject constructor(private val tasksRepository: TasksRepo
                 deleteTask()
             }
             Action.DELETE_ALL -> {}
-            Action.UNDO -> {}
+            Action.UNDO -> {addTask()}
             Action.NO_ACTION -> {}
         }
         this.action.value = Action.NO_ACTION
