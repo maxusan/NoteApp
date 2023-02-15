@@ -63,27 +63,33 @@ class SharedViewModel @Inject constructor(private val tasksRepository: TasksRepo
         }
     }
 
-    fun updateTaskFields(task: Task?){
+    fun updateTaskFields(task: Task?) {
         id.value = task?.id ?: -1
         title.value = task?.title ?: ""
         description.value = task?.description ?: ""
         priority.value = task?.priority ?: Priority.LOW
     }
 
-    fun updateTitle(newTitle: String){
-        if(newTitle.length < MAX_TITLE_LENGTH)
+    fun updateTitle(newTitle: String) {
+        if (newTitle.length < MAX_TITLE_LENGTH)
             title.value = newTitle
     }
 
-    fun validateFields(): Boolean{
+    fun validateFields(): Boolean {
         return title.value.isNotEmpty() && description.value.isNotEmpty()
     }
 
-    fun handleDatabaseActions(action: Action){
-        when(action){
-            Action.ADD -> {addTask()}
-            Action.UPDATE -> {}
-            Action.DELETE -> {}
+    fun handleDatabaseActions(action: Action) {
+        when (action) {
+            Action.ADD -> {
+                addTask()
+            }
+            Action.UPDATE -> {
+                updateTask()
+            }
+            Action.DELETE -> {
+                deleteTask()
+            }
             Action.DELETE_ALL -> {}
             Action.UNDO -> {}
             Action.NO_ACTION -> {}
@@ -91,7 +97,7 @@ class SharedViewModel @Inject constructor(private val tasksRepository: TasksRepo
         this.action.value = Action.NO_ACTION
     }
 
-    private fun addTask(){
+    private fun addTask() {
         viewModelScope.launch(Dispatchers.IO) {
             val task = Task(
                 title = title.value,
@@ -99,6 +105,30 @@ class SharedViewModel @Inject constructor(private val tasksRepository: TasksRepo
                 priority = priority.value
             )
             tasksRepository.insertTask(task)
+        }
+    }
+
+    private fun updateTask() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val task = Task(
+                id = id.value,
+                title = title.value,
+                description = description.value,
+                priority = priority.value
+            )
+            tasksRepository.updateTask(task)
+        }
+    }
+
+    private fun deleteTask() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val task = Task(
+                id = id.value,
+                title = title.value,
+                description = description.value,
+                priority = priority.value
+            )
+            tasksRepository.deleteTask(task)
         }
     }
 }

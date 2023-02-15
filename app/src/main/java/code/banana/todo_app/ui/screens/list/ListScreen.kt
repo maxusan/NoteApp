@@ -1,16 +1,10 @@
 package code.banana.todo_app.ui.screens.list
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -21,6 +15,7 @@ import code.banana.todo_app.ui.theme.fabBackgroundColor
 import code.banana.todo_app.ui.viewmodels.SharedViewModel
 import code.banana.todo_app.util.Action
 import code.banana.todo_app.util.SearchAppBarState
+import kotlinx.coroutines.launch
 
 /**
  * Created by Maksym Kovalchuk on 2/14/2023.
@@ -39,9 +34,17 @@ fun ListScreen(
     val searchAppBarState: SearchAppBarState by viewModel.searchAppBarState
     val searchTextState: String by viewModel.searchTextState
 
-    viewModel.handleDatabaseActions(action = action)
+    val scaffoldState = rememberScaffoldState()
+
+    DisplaySnackBar(
+        scaffoldState = scaffoldState,
+        handleDatabaseActions = { viewModel.handleDatabaseActions(action = action) },
+        taskTitle = viewModel.title.value,
+        action = action
+    )
 
     Scaffold(
+        scaffoldState = scaffoldState,
         topBar = {
             ListAppBar(
                 viewModel = viewModel,
@@ -50,7 +53,11 @@ fun ListScreen(
             )
         },
         content = {
-            ListContent(modifier = Modifier.padding(it), allTasks, navigateToTaskScreen = navigateToTaskScreen)
+            ListContent(
+                modifier = Modifier.padding(it),
+                allTasks,
+                navigateToTaskScreen = navigateToTaskScreen
+            )
         },
         floatingActionButton = {
             ListFab(onFabClicked = navigateToTaskScreen)
@@ -71,6 +78,28 @@ fun ListFab(onFabClicked: (taskId: Int) -> Unit) {
             contentDescription = stringResource(id = R.string.add_button),
             tint = Color.White
         )
+    }
+}
+
+@Composable
+fun DisplaySnackBar(
+    scaffoldState: ScaffoldState,
+    handleDatabaseActions: () -> Unit,
+    taskTitle: String,
+    action: Action
+) {
+    handleDatabaseActions()
+    val scope = rememberCoroutineScope()
+    LaunchedEffect(key1 = action) {
+        if (action != Action.NO_ACTION) {
+            scope.launch {
+                val snackBarResult =
+                    scaffoldState.snackbarHostState.showSnackbar(
+                        message = "${action.name} : $taskTitle",
+                        actionLabel = "OK"
+                    )
+            }
+        }
     }
 }
 
