@@ -29,15 +29,41 @@ fun ListContent(
     modifier: Modifier = Modifier,
     allTasks: RequestState<List<Task>>,
     searchTasks: RequestState<List<Task>>,
+    lowPriorityTasks: List<Task>,
+    highPriorityTasks: List<Task>,
+    sortState: RequestState<Priority>,
     searchAppBarState: SearchAppBarState,
     navigateToTaskScreen: (taskId: Int) -> Unit
 ) {
-    if (searchAppBarState == SearchAppBarState.TRIGGERED) {
-        if (searchTasks is RequestState.Success)
-            HandleListContent(tasks = searchTasks.data, navigateToTaskScreen = navigateToTaskScreen)
-    } else {
-        if (allTasks is RequestState.Success)
-            HandleListContent(tasks = allTasks.data, navigateToTaskScreen = navigateToTaskScreen)
+    if (sortState is RequestState.Success) {
+        when {
+            searchAppBarState == SearchAppBarState.TRIGGERED -> {
+                if (searchTasks is RequestState.Success)
+                    HandleListContent(
+                        tasks = searchTasks.data,
+                        navigateToTaskScreen = navigateToTaskScreen
+                    )
+            }
+            sortState.data == Priority.NONE -> {
+                if (allTasks is RequestState.Success)
+                    HandleListContent(
+                        tasks = allTasks.data,
+                        navigateToTaskScreen = navigateToTaskScreen
+                    )
+            }
+            sortState.data == Priority.LOW -> {
+                HandleListContent(
+                    tasks = lowPriorityTasks,
+                    navigateToTaskScreen = navigateToTaskScreen
+                )
+            }
+            sortState.data == Priority.HIGH -> {
+                HandleListContent(
+                    tasks = highPriorityTasks,
+                    navigateToTaskScreen = navigateToTaskScreen
+                )
+            }
+        }
     }
 }
 

@@ -11,10 +11,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import code.banana.todo_app.R
+import code.banana.todo_app.data.models.Task
 import code.banana.todo_app.ui.theme.fabBackgroundColor
 import code.banana.todo_app.ui.viewmodels.SharedViewModel
 import code.banana.todo_app.util.Action
 import code.banana.todo_app.util.SearchAppBarState
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 /**
@@ -28,9 +30,14 @@ fun ListScreen(
 ) {
     LaunchedEffect(key1 = true) {
         viewModel.getAllTasks()
+        viewModel.readSortState()
     }
     val action by viewModel.action
     val allTasks by viewModel.allTasks.collectAsState()
+    val sortState by viewModel.sortState.collectAsState()
+    val lowPriorityTasks by viewModel.lowPriorityTasks.collectAsState()
+    val highPriorityTasks by viewModel.highPriorityTasks.collectAsState()
+
     val searchedTasks by viewModel.searchedTasks.collectAsState()
     val searchAppBarState: SearchAppBarState by viewModel.searchAppBarState
     val searchTextState: String by viewModel.searchTextState
@@ -61,6 +68,9 @@ fun ListScreen(
                 modifier = Modifier.padding(it),
                 searchAppBarState = searchAppBarState,
                 allTasks = allTasks,
+                lowPriorityTasks = lowPriorityTasks,
+                highPriorityTasks = highPriorityTasks,
+                sortState = sortState,
                 searchTasks = searchedTasks,
                 navigateToTaskScreen = navigateToTaskScreen
             )

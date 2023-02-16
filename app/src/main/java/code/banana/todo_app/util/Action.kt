@@ -13,7 +13,7 @@ enum class Action {
 }
 
 fun String?.toAction(): Action {
-    return when{
+    return when {
         this == "ADD" -> {
             Action.ADD
         }

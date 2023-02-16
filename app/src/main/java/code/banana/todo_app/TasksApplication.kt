@@ -7,4 +7,4 @@ import dagger.hilt.android.HiltAndroidApp
  * Created by Maksym Kovalchuk on 2/13/2023.
  */
 @HiltAndroidApp
-class TasksApplication: Application()
+class TasksApplication : Application()

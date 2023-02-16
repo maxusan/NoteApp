@@ -43,7 +43,9 @@ fun ListAppBar(
             DefaultListAppBar(onSearchClicked = {
                 viewModel.searchAppBarState.value = SearchAppBarState.OPENED
             },
-                onSortClicked = {},
+                onSortClicked = {
+                    viewModel.persistSortState(priority = it)
+                },
                 onDeleteAllConfirmed = { viewModel.action.value = Action.DELETE_ALL })
         }
         else -> {
@@ -121,12 +123,12 @@ fun SortAction(onSortClicked: (Priority) -> Unit) {
             }) {
                 PriorityItem(priority = Priority.LOW)
             }
-            DropdownMenuItem(onClick = {
-                expanded = false
-                onSortClicked(Priority.MEDIUM)
-            }) {
-                PriorityItem(priority = Priority.MEDIUM)
-            }
+//            DropdownMenuItem(onClick = {
+//                expanded = false
+//                onSortClicked(Priority.MEDIUM)
+//            }) {
+//                PriorityItem(priority = Priority.MEDIUM)
+//            }
             DropdownMenuItem(onClick = {
                 expanded = false
                 onSortClicked(Priority.HIGH)

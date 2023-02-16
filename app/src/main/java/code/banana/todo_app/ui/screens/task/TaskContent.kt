@@ -15,9 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import code.banana.todo_app.R
 import code.banana.todo_app.components.PriorityDropdown
 import code.banana.todo_app.data.models.Priority
-import code.banana.todo_app.ui.theme.LARGE_PADDING
 import code.banana.todo_app.ui.theme.MEDIUM_PADDING
-import code.banana.todo_app.ui.theme.SMALL_PADDING
 
 /**
  * Created by Maksym Kovalchuk on 2/15/2023.
@@ -32,25 +30,31 @@ fun TaskContent(
     onPrioritySelected: (Priority) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colors.background)
-        .padding(all = MEDIUM_PADDING)) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.background)
+            .padding(all = MEDIUM_PADDING)
+    ) {
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = title,
             onValueChange = onTitleChange,
-            label = { Text(text = stringResource(R.string.title))},
+            label = { Text(text = stringResource(R.string.title)) },
             textStyle = MaterialTheme.typography.body1,
             singleLine = true,
 
+            )
+        PriorityDropdown(
+            modifier = Modifier.padding(top = MEDIUM_PADDING),
+            priority = priority,
+            onPrioritySelected = onPrioritySelected
         )
-        PriorityDropdown(modifier = Modifier.padding(top = MEDIUM_PADDING), priority = priority, onPrioritySelected = onPrioritySelected)
         OutlinedTextField(
             modifier = Modifier.fillMaxSize(),
             value = description,
             onValueChange = onDescriptionChange,
-            label = { Text(text = stringResource(R.string.description))},
+            label = { Text(text = stringResource(R.string.description)) },
             textStyle = MaterialTheme.typography.body1,
         )
     }

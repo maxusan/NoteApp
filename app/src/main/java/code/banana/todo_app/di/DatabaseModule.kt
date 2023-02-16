@@ -21,7 +21,7 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideTasksDatabase(@ApplicationContext context: Context): TasksDatabase{
+    fun provideTasksDatabase(@ApplicationContext context: Context): TasksDatabase {
         return Room.databaseBuilder(
             context,
             TasksDatabase::class.java,
@@ -31,7 +31,7 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideTasksDao(tasksDatabase: TasksDatabase): TasksDao{
+    fun provideTasksDao(tasksDatabase: TasksDatabase): TasksDao {
         return tasksDatabase.taskDao()
     }
 }

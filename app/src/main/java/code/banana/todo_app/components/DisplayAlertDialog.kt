@@ -19,7 +19,7 @@ fun DisplayAlertDialog(
 ) {
     if (openDialog) {
         AlertDialog(
-            onDismissRequest = {closeDialog()},
+            onDismissRequest = { closeDialog() },
             title = {
                 Text(
                     text = title,
