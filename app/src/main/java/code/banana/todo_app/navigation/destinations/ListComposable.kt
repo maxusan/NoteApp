@@ -1,9 +1,12 @@
+@file:OptIn(ExperimentalAnimationApi::class)
+
 package code.banana.todo_app.navigation.destinations
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
-import androidx.navigation.compose.composable
+import com.google.accompanist.navigation.animation.composable
 import androidx.navigation.navArgument
 import code.banana.todo_app.ui.screens.list.ListScreen
 import code.banana.todo_app.ui.viewmodels.SharedViewModel

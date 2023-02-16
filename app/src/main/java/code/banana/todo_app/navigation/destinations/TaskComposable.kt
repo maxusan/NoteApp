@@ -1,11 +1,16 @@
+@file:OptIn(ExperimentalAnimationApi::class)
+
 package code.banana.todo_app.navigation.destinations
 
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
-import androidx.navigation.compose.composable
+import com.google.accompanist.navigation.animation.composable
 import androidx.navigation.navArgument
 import code.banana.todo_app.ui.screens.task.TaskScreen
 import code.banana.todo_app.ui.viewmodels.SharedViewModel
@@ -23,7 +28,11 @@ fun NavGraphBuilder.taskComposable(
         route = Constants.TASK_SCREEN,
         arguments = listOf(navArgument(Constants.TASK_ARGUMENT_KEY) {
             type = NavType.IntType
-        })
+        }), enterTransition = {
+            slideInHorizontally(
+                animationSpec = tween(durationMillis = 1000)
+            )
+        }
     ) { navBackStackEntry ->
         val taskId = navBackStackEntry.arguments!!.getInt(Constants.TASK_ARGUMENT_KEY)
         LaunchedEffect(key1 = taskId, block = { viewModel.getSelectedTask(taskId = taskId) })
