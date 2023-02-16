@@ -140,7 +140,7 @@ fun DisplayTasks(
             var itemAppeared by remember {
                 mutableStateOf(false)
             }
-            LaunchedEffect(key1 = true, block = {itemAppeared = true})
+            LaunchedEffect(key1 = true, block = { itemAppeared = true })
             AnimatedVisibility(
                 visible = itemAppeared && !isDismissed,
                 enter = expandVertically(
