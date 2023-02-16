@@ -11,12 +11,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import code.banana.todo_app.R
-import code.banana.todo_app.data.models.Task
 import code.banana.todo_app.ui.theme.fabBackgroundColor
 import code.banana.todo_app.ui.viewmodels.SharedViewModel
 import code.banana.todo_app.util.Action
 import code.banana.todo_app.util.SearchAppBarState
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 /**
@@ -27,12 +25,13 @@ import kotlinx.coroutines.launch
 fun ListScreen(
     navigateToTaskScreen: (taskId: Int) -> Unit,
     viewModel: SharedViewModel,
+    action: Action,
 ) {
-    LaunchedEffect(key1 = true) {
-        viewModel.getAllTasks()
-        viewModel.readSortState()
-    }
-    val action by viewModel.action
+
+    LaunchedEffect(key1 = action, block = {
+        viewModel.handleDatabaseActions(action)
+    })
+
     val allTasks by viewModel.allTasks.collectAsState()
     val sortState by viewModel.sortState.collectAsState()
     val lowPriorityTasks by viewModel.lowPriorityTasks.collectAsState()
@@ -46,7 +45,7 @@ fun ListScreen(
 
     DisplaySnackBar(
         scaffoldState = scaffoldState,
-        handleDatabaseActions = { viewModel.handleDatabaseActions(action = action) },
+        onComplete = { viewModel.action.value = it },
         onUndoClicked = {
             viewModel.action.value = it
         },
@@ -72,7 +71,7 @@ fun ListScreen(
                 highPriorityTasks = highPriorityTasks,
                 sortState = sortState,
                 searchTasks = searchedTasks,
-                onSwipeToDelete = {action, task ->
+                onSwipeToDelete = { action, task ->
                     viewModel.action.value = action
                     viewModel.updateTaskFields(task = task)
                 },
@@ -104,12 +103,11 @@ fun ListFab(onFabClicked: (taskId: Int) -> Unit) {
 @Composable
 fun DisplaySnackBar(
     scaffoldState: ScaffoldState,
-    handleDatabaseActions: () -> Unit,
+    onComplete: (Action) -> Unit,
     onUndoClicked: (Action) -> Unit,
     taskTitle: String,
     action: Action
 ) {
-    handleDatabaseActions()
     val scope = rememberCoroutineScope()
     LaunchedEffect(key1 = action) {
         if (action != Action.NO_ACTION) {
@@ -125,6 +123,7 @@ fun DisplaySnackBar(
                     onUndoClicked = onUndoClicked
                 )
             }
+            onComplete(Action.NO_ACTION)
         }
     }
 }
@@ -160,5 +159,5 @@ private fun undoDeletedTask(
 @Composable
 @Preview
 fun ListScreenPreview() {
-    ListScreen(navigateToTaskScreen = {}, viewModel = hiltViewModel())
+    ListScreen(navigateToTaskScreen = {}, viewModel = hiltViewModel(), action = Action.NO_ACTION)
 }

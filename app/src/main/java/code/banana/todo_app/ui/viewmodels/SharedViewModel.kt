@@ -62,7 +62,12 @@ class SharedViewModel @Inject constructor(
         emptyList()
     )
 
-    fun readSortState() {
+    init {
+        getAllTasks()
+        readSortState()
+    }
+
+    private fun readSortState() {
         _sortState.value = RequestState.Loading
         try {
             viewModelScope.launch {
@@ -75,7 +80,7 @@ class SharedViewModel @Inject constructor(
         }
     }
 
-    fun getAllTasks() {
+    private fun getAllTasks() {
         _allTasks.value = RequestState.Loading
         try {
             viewModelScope.launch {
@@ -134,24 +139,18 @@ class SharedViewModel @Inject constructor(
 
     fun handleDatabaseActions(action: Action) {
         when (action) {
-            Action.ADD -> {
+            Action.ADD ->
                 addTask()
-            }
-            Action.UPDATE -> {
+            Action.UPDATE ->
                 updateTask()
-            }
-            Action.DELETE -> {
+            Action.DELETE ->
                 deleteTask()
-            }
-            Action.DELETE_ALL -> {
+            Action.DELETE_ALL ->
                 deleteAllTasks()
-            }
-            Action.UNDO -> {
+            Action.UNDO ->
                 addTask()
-            }
             Action.NO_ACTION -> {}
         }
-        this.action.value = Action.NO_ACTION
     }
 
     private fun addTask() {

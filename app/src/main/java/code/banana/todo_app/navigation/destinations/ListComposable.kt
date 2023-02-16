@@ -4,6 +4,7 @@ package code.banana.todo_app.navigation.destinations
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import com.google.accompanist.navigation.animation.composable
@@ -31,7 +32,7 @@ fun NavGraphBuilder.listComposable(
         LaunchedEffect(key1 = action, block = {
             viewModel.action.value = action
         })
-
-        ListScreen(navigateToTaskScreen = navigateToTaskScreen, viewModel = viewModel)
+        val databaseAction by viewModel.action
+        ListScreen(navigateToTaskScreen = navigateToTaskScreen, viewModel = viewModel, action = action)
     }
 }
