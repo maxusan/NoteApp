@@ -15,7 +15,7 @@ fun DisplayAlertDialog(
     message: String,
     openDialog: Boolean,
     closeDialog: () -> Unit,
-    onYesClicked: () -> Unit
+    onYesClicked: () -> Unit,
 ) {
     if (openDialog) {
         AlertDialog(

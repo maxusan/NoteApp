@@ -15,5 +15,5 @@ data class TaskEntity(
     val title: String,
     val description: String,
     val priority: Priority,
-    val timestamp: Long
+    val timestamp: Long,
 )

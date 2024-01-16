@@ -46,6 +46,7 @@ fun TaskAppBar(
             deleteTask = deleteTask,
             taskTitle = taskTitle
         )
+
         TaskScreenState.ScreenState.Default -> {}
     }
 }

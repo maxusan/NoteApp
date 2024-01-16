@@ -7,8 +7,8 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import code.banana.todo_app.Constants.PREFERENCES_NAME
 import code.banana.todo_app.Constants.FILTER_KEY
+import code.banana.todo_app.Constants.PREFERENCES_NAME
 import code.banana.todo_app.models.Priority
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.catch

@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import javax.inject.Inject
 
-class DateUtils @Inject constructor(){
+class DateUtils @Inject constructor() {
 
     private val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault())
 

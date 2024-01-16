@@ -5,8 +5,8 @@ import androidx.navigation.compose.composable
 import code.banana.todo_app.navigation.Destination
 import code.banana.todo_app.ui.screens.list.ListScreen
 
-fun NavGraphBuilder.tasksListComposable(){
-    composable(route = Destination.TasksListScreen.fullRoute){
+fun NavGraphBuilder.tasksListComposable() {
+    composable(route = Destination.TasksListScreen.fullRoute) {
         ListScreen()
     }
 }

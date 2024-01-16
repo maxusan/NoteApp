@@ -1,6 +1,5 @@
 package code.banana.todo_app.navigation.navigator
 
-import android.content.Intent
 import kotlinx.coroutines.flow.SharedFlow
 
 interface AppNavigator {

@@ -1,7 +1,5 @@
 package code.banana.todo_app.navigation.navigator
 
-import android.content.Intent
-
 
 sealed class NavigationIntent {
     data class NavigateBack(

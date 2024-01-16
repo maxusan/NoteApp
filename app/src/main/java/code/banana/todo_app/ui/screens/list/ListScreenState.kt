@@ -8,9 +8,9 @@ data class ListScreenState(
     val tasks: List<Task> = emptyList(),
     val filterDropdownExpanded: Boolean = false,
     val listSortState: ListSortState = ListSortState.ASCENDING,
-): UiState{
+) : UiState {
 
-    enum class ListSortState{
+    enum class ListSortState {
         ASCENDING,
         DESCENDING
     }

@@ -11,7 +11,7 @@ data class TaskScreenState(
     val showDeleteTaskDialog: Boolean = false,
     val priority: Priority = Priority.LOW,
     val timestamp: Long = 0L,
-    val taskState: ScreenState = ScreenState.Default
+    val taskState: ScreenState = ScreenState.Default,
 ) : UiState {
 
 

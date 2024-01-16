@@ -49,7 +49,7 @@ fun SplashScreen(
         animationSpec = tween(1000), label = ""
     )
 
-    LaunchedEffect( true) {
+    LaunchedEffect(true) {
         startAnimation = true
         delay(SPLASH_SCREEN_DELAY)
         viewModel.navigateToList()

@@ -77,10 +77,10 @@ fun TaskContentPreview() {
         onDescriptionChange = {},
         priority = Priority.LOW,
         onPrioritySelected = {},
-        modifier =Modifier,
+        modifier = Modifier,
         priorityDropdownExpanded = false,
         onPriorityDropdownClicked = {},
         dismissPriorityDropdown = {},
-        
-    )
+
+        )
 }

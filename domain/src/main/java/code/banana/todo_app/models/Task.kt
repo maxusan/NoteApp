@@ -7,5 +7,5 @@ data class Task(
     val priority: Priority,
     val timestamp: Long = System.currentTimeMillis(),
 
-    val formattedDate: String = ""
+    val formattedDate: String = "",
 )
