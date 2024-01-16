@@ -10,18 +10,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import code.banana.todo_app.data.models.Priority
+import code.banana.todo_app.models.Priority
 import code.banana.todo_app.ui.theme.MEDIUM_PADDING
 import code.banana.todo_app.ui.theme.PRIORITY_INDICATOR_SIZE
+import code.banana.todo_app.util.colorByPriority
 
 /**
  * Created by Maksym Kovalchuk on 2/14/2023.
  */
 @Composable
 fun PriorityItem(priority: Priority, modifier: Modifier = Modifier) {
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier) {
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier) {
         Canvas(modifier = Modifier.size(PRIORITY_INDICATOR_SIZE)) {
-            drawCircle(color = priority.color)
+            drawCircle(color = priority.colorByPriority())
         }
         Text(
             modifier = Modifier.padding(start = MEDIUM_PADDING),
@@ -35,5 +36,5 @@ fun PriorityItem(priority: Priority, modifier: Modifier = Modifier) {
 @Preview
 @Composable
 fun PriorityItemPreview() {
-    PriorityItem(priority = Priority.HIGH)
+    PriorityItem(priority = code.banana.todo_app.models.Priority.HIGH)
 }

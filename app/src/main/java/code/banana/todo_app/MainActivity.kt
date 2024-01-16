@@ -1,28 +1,82 @@
 package code.banana.todo_app
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import code.banana.todo_app.navigation.Navigation
+import code.banana.todo_app.navigation.AppNavHost
+import code.banana.todo_app.navigation.Destination
+import code.banana.todo_app.navigation.navigator.NavigationIntent
 import code.banana.todo_app.ui.theme.ToDoAppTheme
-import code.banana.todo_app.ui.viewmodels.SharedViewModel
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.SharedFlow
 
-@OptIn(ExperimentalAnimationApi::class)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             ToDoAppTheme {
-                val navController = rememberAnimatedNavController()
-                val viewModel = hiltViewModel<SharedViewModel>()
-                Navigation(navController = navController, viewModel = viewModel)
+                val navController = rememberNavController()
+                val viewModel: MainViewModel = hiltViewModel()
+                NavigationEffects(
+                    navigationFlow = viewModel.navigationFlow,
+                    navHostController = navController
+                )
+
+                AppNavHost(
+                    navController = navController,
+                    startDestination = Destination.Splash
+                )
             }
+        }
+    }
+
+    @Composable
+    fun NavigationEffects(
+        navigationFlow: SharedFlow<NavigationIntent>,
+        navHostController: NavHostController,
+    ) {
+        LaunchedEffect(this, navHostController, navigationFlow) {
+            navigationFlow
+                .collect { intent ->
+                    if (isFinishing) {
+                        return@collect
+                    }
+                    when (intent) {
+                        is NavigationIntent.NavigateBack -> {
+                            if (intent.route != null) {
+                                navHostController.popBackStack(intent.route, intent.inclusive)
+                            } else {
+                                navHostController.popBackStack()
+                            }
+                        }
+
+                        is NavigationIntent.NavigateTo -> {
+                            navHostController.navigate(intent.route) {
+                                launchSingleTop = intent.isSingleTop
+                                intent.popUpToRoute?.let { popUpToRoute ->
+                                    popUpTo(popUpToRoute) { inclusive = intent.inclusive }
+                                }
+                            }
+                        }
+
+                        is NavigationIntent.NavigateToWithClearBackStack -> {
+                            navHostController.navigate(intent.route) {
+                                launchSingleTop = intent.isSingleTop
+                                popUpTo(navHostController.graph.id)
+                            }
+                        }
+                    }
+                }
         }
     }
 }

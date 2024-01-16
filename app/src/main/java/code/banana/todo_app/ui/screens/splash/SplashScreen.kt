@@ -11,13 +11,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import code.banana.todo_app.R
 import code.banana.todo_app.ui.theme.LOGO_HEIGHT
 import code.banana.todo_app.ui.theme.splashScreenBackground
@@ -28,23 +34,25 @@ import kotlinx.coroutines.delay
  * Created by Maksym Kovalchuk on 2/16/2023.
  */
 @Composable
-fun SplashScreen(navigateToListScreen: () -> Unit) {
+fun SplashScreen(
+    viewModel: SplashScreenViewModel = hiltViewModel(),
+) {
     var startAnimation by remember {
         mutableStateOf(false)
     }
     val offsetState by animateDpAsState(
         targetValue = if (startAnimation) 0.dp else 100.dp,
-        animationSpec = tween(durationMillis = 1000)
+        animationSpec = tween(durationMillis = 1000), label = ""
     )
     val alphaState by animateFloatAsState(
         targetValue = if (startAnimation) 1f else 0f,
-        animationSpec = tween(1000)
+        animationSpec = tween(1000), label = ""
     )
 
-    LaunchedEffect(key1 = true) {
+    LaunchedEffect( true) {
         startAnimation = true
         delay(SPLASH_SCREEN_DELAY)
-        navigateToListScreen()
+        viewModel.navigateToList()
     }
     Box(
         modifier = Modifier
@@ -73,5 +81,5 @@ fun getLogo(): Int {
 @Preview
 @Composable
 fun SplashScreenPreview() {
-    SplashScreen(navigateToListScreen = {})
+    SplashScreen()
 }

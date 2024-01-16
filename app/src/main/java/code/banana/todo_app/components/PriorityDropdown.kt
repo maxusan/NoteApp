@@ -18,10 +18,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import code.banana.todo_app.R
-import code.banana.todo_app.data.models.Priority
+import code.banana.todo_app.models.Priority
 import code.banana.todo_app.ui.theme.MEDIUM_PADDING
 import code.banana.todo_app.ui.theme.PRIORITY_DROPDOWN_HEIGHT
 import code.banana.todo_app.ui.theme.PRIORITY_INDICATOR_SIZE
+import code.banana.todo_app.util.colorByPriority
 
 /**
  * Created by Maksym Kovalchuk on 2/15/2023.
@@ -30,17 +31,20 @@ import code.banana.todo_app.ui.theme.PRIORITY_INDICATOR_SIZE
 fun PriorityDropdown(
     modifier: Modifier = Modifier,
     priority: Priority,
-    onPrioritySelected: (Priority) -> Unit
+    priorityDropdownExpanded: Boolean = false,
+    onPriorityDropdownClicked: () -> Unit,
+    dismissPriorityDropdown: () -> Unit,
+    onPrioritySelected: (Priority) -> Unit,
 ) {
-    var expanded by remember {
-        mutableStateOf(false)
-    }
-    val angle: Float by animateFloatAsState(targetValue = if (expanded) 180f else 0f)
+    val angle: Float by animateFloatAsState(
+        targetValue = if (priorityDropdownExpanded) 180f else 0f,
+        label = ""
+    )
     Row(
         modifier = modifier
             .fillMaxWidth()
             .height(PRIORITY_DROPDOWN_HEIGHT)
-            .clickable { expanded = true }
+            .clickable { onPriorityDropdownClicked() }
             .border(
                 width = 1.dp,
                 color = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled),
@@ -53,7 +57,7 @@ fun PriorityDropdown(
         Canvas(modifier = Modifier
             .size(PRIORITY_INDICATOR_SIZE)
             .padding(start = MEDIUM_PADDING), onDraw = {
-            drawCircle(color = priority.color)
+            drawCircle(color = priority.colorByPriority())
         })
         Text(
             text = priority.name,
@@ -63,7 +67,7 @@ fun PriorityDropdown(
                 .padding(start = MEDIUM_PADDING)
         )
         IconButton(
-            onClick = { expanded = true },
+            onClick = onPriorityDropdownClicked,
             modifier = Modifier
                 .alpha(ContentAlpha.medium)
                 .rotate(angle)
@@ -74,24 +78,21 @@ fun PriorityDropdown(
             )
         }
         DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
+            expanded = priorityDropdownExpanded,
+            onDismissRequest = dismissPriorityDropdown,
             modifier = Modifier.fillMaxWidth(fraction = 0.96f)
         ) {
             DropdownMenuItem(onClick = {
-                expanded = false
                 onPrioritySelected(Priority.LOW)
             }) {
                 PriorityItem(priority = Priority.LOW)
             }
             DropdownMenuItem(onClick = {
-                expanded = false
                 onPrioritySelected(Priority.MEDIUM)
             }) {
                 PriorityItem(priority = Priority.MEDIUM)
             }
             DropdownMenuItem(onClick = {
-                expanded = false
                 onPrioritySelected(Priority.HIGH)
             }) {
                 PriorityItem(priority = Priority.HIGH)
@@ -103,5 +104,11 @@ fun PriorityDropdown(
 @Preview
 @Composable
 fun PriorityDropdownPreview() {
-    PriorityDropdown(priority = Priority.MEDIUM, onPrioritySelected = {})
+    PriorityDropdown(
+        priority = Priority.MEDIUM, onPrioritySelected = {},
+        modifier = Modifier,
+        priorityDropdownExpanded = false,
+        onPriorityDropdownClicked = {},
+        dismissPriorityDropdown = {},
+    )
 }
