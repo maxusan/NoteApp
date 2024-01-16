@@ -1,9 +1,10 @@
 package code.banana.todo_app.ui.screens.list
 
 import androidx.lifecycle.viewModelScope
+import code.banana.todo_app.R
+import code.banana.todo_app.base.AppText
 import code.banana.todo_app.base.BaseViewModel
 import code.banana.todo_app.models.Priority
-import code.banana.todo_app.models.Task
 import code.banana.todo_app.navigation.Destination
 import code.banana.todo_app.navigation.navigator.AppNavigator
 import code.banana.todo_app.repositories.cache.LocalCacheRepository
@@ -13,7 +14,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,8 +21,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ListScreenViewModel @Inject constructor(
     private val appNavigator: AppNavigator,
-    tasksRepository: TasksRepository,
     private val localCacheRepository: LocalCacheRepository,
+    private val tasksRepository: TasksRepository,
 ) : BaseViewModel<ListScreenState, ListScreenEffect>() {
 
     private val _searchQuery: MutableStateFlow<String> = MutableStateFlow("")
@@ -76,8 +76,11 @@ class ListScreenViewModel @Inject constructor(
         }
     }
 
-    fun onSwipeToDelete(task: Task) {
-
+    fun onSwipeToDelete(taskId: Int) {
+        viewModelScope.launch {
+            tasksRepository.deleteTaskById(taskId)
+            setEffect(ListScreenEffect.ShowToast(AppText.StringResText(R.string.task_deleted)))
+        }
     }
 
     fun setSearchQuery(searchQuery: String) {

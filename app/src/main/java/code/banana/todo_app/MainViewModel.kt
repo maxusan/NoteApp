@@ -3,7 +3,6 @@ package code.banana.todo_app
 import androidx.lifecycle.ViewModel
 import code.banana.todo_app.navigation.navigator.AppNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 /**
@@ -11,7 +10,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val appNavigator: AppNavigator
+    appNavigator: AppNavigator,
 ) : ViewModel() {
 
     val navigationFlow = appNavigator.navigationFlow

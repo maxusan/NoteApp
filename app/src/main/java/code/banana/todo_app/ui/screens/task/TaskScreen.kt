@@ -16,7 +16,7 @@ import code.banana.todo_app.R
 import code.banana.todo_app.components.DisplayAlertDialog
 import code.banana.todo_app.ui.screens.task.components.TaskAppBar
 import code.banana.todo_app.ui.screens.task.components.TaskContent
-import code.banana.todo_app.ui.theme.getText
+import code.banana.todo_app.util.getText
 import kotlinx.coroutines.flow.collectLatest
 
 

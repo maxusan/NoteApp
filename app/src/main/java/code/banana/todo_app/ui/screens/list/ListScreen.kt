@@ -1,20 +1,25 @@
 package code.banana.todo_app.ui.screens.list
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import code.banana.todo_app.R
-import code.banana.todo_app.ui.screens.list.components.ListScreenTopBar
 import code.banana.todo_app.ui.screens.list.components.ListContent
+import code.banana.todo_app.ui.screens.list.components.ListScreenTopBar
 import code.banana.todo_app.ui.theme.fabBackgroundColor
+import code.banana.todo_app.util.getText
+import kotlinx.coroutines.flow.collectLatest
 
 /**
  * Created by Maksym Kovalchuk on 2/14/2023.
@@ -24,13 +29,26 @@ import code.banana.todo_app.ui.theme.fabBackgroundColor
 fun ListScreen(
     viewModel: ListScreenViewModel = hiltViewModel(),
 ) {
-
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val searchText by viewModel.searchQuery.collectAsStateWithLifecycle()
     val priorityFilter by viewModel.priorityFilter.collectAsStateWithLifecycle()
     val sort by viewModel.sort.collectAsStateWithLifecycle()
 
+    val listState = rememberLazyListState()
+
+    val context = LocalContext.current
+
     val scaffoldState = rememberScaffoldState()
+
+    LaunchedEffect("ObserveEffects") {
+        viewModel.effect.collectLatest {
+            when (it) {
+                is ListScreenEffect.ShowToast -> {
+                    Toast.makeText(context, it.text.getText(context), Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -52,6 +70,7 @@ fun ListScreen(
             ListContent(
                 modifier = Modifier.padding(it),
                 state = state,
+                listState = listState,
                 onSwipeToDelete = viewModel::onSwipeToDelete,
                 navigateToTaskScreen = viewModel::navigateToTaskScreen
             )

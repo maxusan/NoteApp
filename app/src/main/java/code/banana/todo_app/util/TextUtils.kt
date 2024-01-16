@@ -1,4 +1,4 @@
-package code.banana.todo_app.ui.theme
+package code.banana.todo_app.util
 
 import android.content.Context
 import code.banana.todo_app.base.AppText
