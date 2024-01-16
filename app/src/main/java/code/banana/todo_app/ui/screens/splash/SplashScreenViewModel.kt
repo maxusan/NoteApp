@@ -16,9 +16,9 @@ class SplashScreenViewModel @Inject constructor(
         return SplashScreenState()
     }
 
-    fun navigateToList(){
+    fun navigateToList() {
         viewModelScope.launch {
-            appNavigator.navigateTo(Destination.TasksListScreen.fullRoute)
+            appNavigator.navigateWithClearBackstack(route = Destination.TasksListScreen.fullRoute)
         }
     }
 }

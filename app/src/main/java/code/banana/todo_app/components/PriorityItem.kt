@@ -20,7 +20,7 @@ import code.banana.todo_app.util.colorByPriority
  */
 @Composable
 fun PriorityItem(priority: Priority, modifier: Modifier = Modifier) {
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier) {
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier) {
         Canvas(modifier = Modifier.size(PRIORITY_INDICATOR_SIZE)) {
             drawCircle(color = priority.colorByPriority())
         }

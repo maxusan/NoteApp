@@ -25,5 +25,6 @@
     <string name="are_you_sure">Are you sure want to delete all tasks?</string>
     <string name="task_created">Task created</string>
     <string name="task_updated">Task updated</string>
+    <string name="task_deleted">Task deleted</string>
     <string name="clear_searchfield">Clear search text</string>
 </resources>

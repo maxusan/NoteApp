@@ -30,18 +30,21 @@ import code.banana.todo_app.util.colorByPriority
 @Composable
 fun PriorityDropdown(
     modifier: Modifier = Modifier,
-    priority: code.banana.todo_app.models.Priority,
-    onPrioritySelected: (code.banana.todo_app.models.Priority) -> Unit
+    priority: Priority,
+    priorityDropdownExpanded: Boolean = false,
+    onPriorityDropdownClicked: () -> Unit,
+    dismissPriorityDropdown: () -> Unit,
+    onPrioritySelected: (Priority) -> Unit,
 ) {
-    var expanded by remember {
-        mutableStateOf(false)
-    }
-    val angle: Float by animateFloatAsState(targetValue = if (expanded) 180f else 0f)
+    val angle: Float by animateFloatAsState(
+        targetValue = if (priorityDropdownExpanded) 180f else 0f,
+        label = ""
+    )
     Row(
         modifier = modifier
             .fillMaxWidth()
             .height(PRIORITY_DROPDOWN_HEIGHT)
-            .clickable { expanded = true }
+            .clickable { onPriorityDropdownClicked() }
             .border(
                 width = 1.dp,
                 color = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled),
@@ -64,7 +67,7 @@ fun PriorityDropdown(
                 .padding(start = MEDIUM_PADDING)
         )
         IconButton(
-            onClick = { expanded = true },
+            onClick = onPriorityDropdownClicked,
             modifier = Modifier
                 .alpha(ContentAlpha.medium)
                 .rotate(angle)
@@ -75,27 +78,24 @@ fun PriorityDropdown(
             )
         }
         DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
+            expanded = priorityDropdownExpanded,
+            onDismissRequest = dismissPriorityDropdown,
             modifier = Modifier.fillMaxWidth(fraction = 0.96f)
         ) {
             DropdownMenuItem(onClick = {
-                expanded = false
-                onPrioritySelected(code.banana.todo_app.models.Priority.LOW)
+                onPrioritySelected(Priority.LOW)
             }) {
-                PriorityItem(priority = code.banana.todo_app.models.Priority.LOW)
+                PriorityItem(priority = Priority.LOW)
             }
             DropdownMenuItem(onClick = {
-                expanded = false
-                onPrioritySelected(code.banana.todo_app.models.Priority.MEDIUM)
+                onPrioritySelected(Priority.MEDIUM)
             }) {
-                PriorityItem(priority = code.banana.todo_app.models.Priority.MEDIUM)
+                PriorityItem(priority = Priority.MEDIUM)
             }
             DropdownMenuItem(onClick = {
-                expanded = false
-                onPrioritySelected(code.banana.todo_app.models.Priority.HIGH)
+                onPrioritySelected(Priority.HIGH)
             }) {
-                PriorityItem(priority = code.banana.todo_app.models.Priority.HIGH)
+                PriorityItem(priority = Priority.HIGH)
             }
         }
     }
@@ -104,5 +104,11 @@ fun PriorityDropdown(
 @Preview
 @Composable
 fun PriorityDropdownPreview() {
-    PriorityDropdown(priority = code.banana.todo_app.models.Priority.MEDIUM, onPrioritySelected = {})
+    PriorityDropdown(
+        priority = Priority.MEDIUM, onPrioritySelected = {},
+        modifier = Modifier,
+        priorityDropdownExpanded = false,
+        onPriorityDropdownClicked = {},
+        dismissPriorityDropdown = {},
+    )
 }

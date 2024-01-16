@@ -22,13 +22,16 @@ import code.banana.todo_app.ui.theme.MEDIUM_PADDING
  */
 @Composable
 fun TaskContent(
+    modifier: Modifier = Modifier,
     title: String,
     onTitleChange: (String) -> Unit,
     description: String,
     onDescriptionChange: (String) -> Unit,
-    priority: code.banana.todo_app.models.Priority,
-    onPrioritySelected: (code.banana.todo_app.models.Priority) -> Unit,
-    modifier: Modifier = Modifier
+    priorityDropdownExpanded: Boolean = false,
+    onPriorityDropdownClicked: () -> Unit,
+    dismissPriorityDropdown: () -> Unit,
+    priority: Priority,
+    onPrioritySelected: (Priority) -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -48,8 +51,12 @@ fun TaskContent(
         PriorityDropdown(
             modifier = Modifier.padding(top = MEDIUM_PADDING),
             priority = priority,
-            onPrioritySelected = onPrioritySelected
-        )
+            onPrioritySelected = onPrioritySelected,
+            priorityDropdownExpanded = priorityDropdownExpanded,
+            onPriorityDropdownClicked = onPriorityDropdownClicked,
+            dismissPriorityDropdown = dismissPriorityDropdown,
+
+            )
         OutlinedTextField(
             modifier = Modifier.fillMaxSize(),
             value = description,
@@ -69,6 +76,11 @@ fun TaskContentPreview() {
         description = "",
         onDescriptionChange = {},
         priority = Priority.LOW,
-        onPrioritySelected = {}
+        onPrioritySelected = {},
+        modifier =Modifier,
+        priorityDropdownExpanded = false,
+        onPriorityDropdownClicked = {},
+        dismissPriorityDropdown = {},
+        
     )
 }

@@ -9,8 +9,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import code.banana.todo_app.R
+import code.banana.todo_app.components.DisplayAlertDialog
 import code.banana.todo_app.ui.screens.task.components.TaskAppBar
 import code.banana.todo_app.ui.screens.task.components.TaskContent
 import code.banana.todo_app.ui.theme.getText
@@ -60,66 +63,20 @@ fun TaskScreen(
             description = state.description,
             onDescriptionChange = { viewModel.updateDescription(it) },
             priority = state.priority,
-            onPrioritySelected = { viewModel.updatePriority(it) }
-        )
+            onPrioritySelected = { viewModel.updatePriority(it) },
+            priorityDropdownExpanded = state.priorityDropdownExpanded,
+            onPriorityDropdownClicked = viewModel::onPriorityDropdownClicked,
+            dismissPriorityDropdown = viewModel::dismissPriorityDropdown,
+
+            )
     }
+
+    DisplayAlertDialog(
+        title = stringResource(id = R.string.delete_task, state.title),
+        message = stringResource(id = R.string.delete_task_confirmation, state.title),
+        openDialog = state.showDeleteTaskDialog,
+        closeDialog = viewModel::dismissDeleteTaskDialog,
+        onYesClicked = viewModel::deleteTaskConfirmed
+    )
 }
 
-
-//    val title: String by viewModel.title
-//    val description: String by viewModel.description
-//    val priority: Priority by viewModel.priority
-//    val context = LocalContext.current
-//
-//    BackHandler(onBackPressed = { navigateToListScreen(Action.NO_ACTION) })
-//    Scaffold(topBar = {
-//        TaskAppBar(navigateToListScreen = { action ->
-//            if (action == Action.NO_ACTION) {
-//                navigateToListScreen(action)
-//            } else {
-//                if (viewModel.validateFields())
-//                    navigateToListScreen(action)
-//                else
-//                    displayToast(context = context)
-//            }
-//        }, selectedTask = selectedTask)
-//    }, content = {
-//        TaskContent(
-//            title = title,
-//            onTitleChange = { viewModel.updateTitle(it) },
-//            description = description,
-//            onDescriptionChange = { viewModel.description.value = it },
-//            priority = priority,
-//            onPrioritySelected = { viewModel.priority.value = it },
-//            modifier = Modifier.padding(it)
-//        )
-//    })
-//    }
-//
-//fun displayToast(context: Context) {
-//    Toast.makeText(context, context.getString(R.string.fields_empty), Toast.LENGTH_SHORT).show()
-//}
-//
-//@Composable
-//fun BackHandler(
-//    onBackPressedDispatcher: OnBackPressedDispatcher? = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher,
-//    onBackPressed: () -> Unit
-//) {
-//    val currentOnBackPressed by rememberUpdatedState(newValue = onBackPressed)
-//
-//    val backCallback = remember {
-//        object : OnBackPressedCallback(true) {
-//            override fun handleOnBackPressed() {
-//                currentOnBackPressed()
-//            }
-//
-//        }
-//    }
-//
-//    DisposableEffect(key1 = onBackPressedDispatcher, effect = {
-//        onBackPressedDispatcher?.addCallback(backCallback)
-//        onDispose {
-//            backCallback.remove()
-//        }
-//    })
-//}

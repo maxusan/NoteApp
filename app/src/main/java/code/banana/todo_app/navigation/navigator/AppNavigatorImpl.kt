@@ -19,7 +19,6 @@ class AppNavigatorImpl @Inject constructor() : AppNavigator {
     override suspend fun navigateBack(
         route: String?,
         inclusive: Boolean,
-        navigateImmediately: Boolean,
     ) {
         _navigationFlow.emit(
             NavigationIntent.NavigateBack(
@@ -34,7 +33,6 @@ class AppNavigatorImpl @Inject constructor() : AppNavigator {
         popUpDestination: String?,
         inclusive: Boolean,
         isSingleTop: Boolean,
-        navigateImmediately: Boolean,
     ) {
         _navigationFlow.emit(
             NavigationIntent.NavigateTo(
@@ -50,7 +48,6 @@ class AppNavigatorImpl @Inject constructor() : AppNavigator {
     override suspend fun navigateWithClearBackstack(
         route: String,
         isSingleTop: Boolean,
-        navigateImmediately: Boolean,
     ) {
         _navigationFlow.emit(
             NavigationIntent.NavigateToWithClearBackStack(

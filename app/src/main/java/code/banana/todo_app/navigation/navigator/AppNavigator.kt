@@ -9,7 +9,6 @@ interface AppNavigator {
     suspend fun navigateBack(
         route: String? = null,
         inclusive: Boolean = false,
-        navigateImmediately: Boolean = false,
     )
 
     suspend fun navigateTo(
@@ -17,12 +16,10 @@ interface AppNavigator {
         popUpDestination: String? = null,
         inclusive: Boolean = false,
         isSingleTop: Boolean = false,
-        navigateImmediately: Boolean = false,
     )
 
     suspend fun navigateWithClearBackstack(
         route: String,
         isSingleTop: Boolean = false,
-        navigateImmediately: Boolean = false,
     )
 }

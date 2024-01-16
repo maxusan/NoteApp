@@ -34,7 +34,8 @@ class TaskScreenViewModel @Inject constructor(
                     taskState = if (taskId == -1) TaskScreenState.ScreenState.AddTask else TaskScreenState.ScreenState.EditTask,
                     title = task?.title.orEmpty(),
                     description = task?.description.orEmpty(),
-                    priority = task?.priority ?: Priority.LOW
+                    priority = task?.priority ?: Priority.LOW,
+                    timestamp = task?.timestamp ?: System.currentTimeMillis()
                 )
             }
 
@@ -67,22 +68,39 @@ class TaskScreenViewModel @Inject constructor(
                 priority = priority
             )
         }
+        dismissPriorityDropdown()
     }
 
     fun saveTask() {
-        viewModelScope.launch {
-            tasksRepository.insertTask(
-                task = currentState.run {
-                    Task(
-                        title = title,
-                        description = description,
-                        priority = priority
+        validateFields { canSaveTask ->
+            viewModelScope.launch {
+                if (canSaveTask) {
+                    tasksRepository.insertTask(
+                        task = currentState.run {
+                            Task(
+                                title = title,
+                                description = description,
+                                priority = priority,
+                                timestamp = currentState.timestamp
+                            )
+                        }
                     )
+                    setEffect(TaskScreenEffect.ShowToast(text = AppText.StringResText(textRes = R.string.task_created)))
+                    navigateBack()
+                } else {
+                    setEffect(TaskScreenEffect.ShowToast(text = AppText.StringResText(textRes = R.string.fields_empty)))
                 }
-            )
-            setEffect(TaskScreenEffect.ShowToast(text = AppText.StringResText(textRes = R.string.task_created)))
-            navigateBack()
+            }
         }
+    }
+
+    private fun validateFields(isValid: (Boolean) -> Unit) {
+        val titleEmpty = currentState.title.trim().isEmpty()
+        val descriptionEmpty = currentState.description.trim().isEmpty()
+
+        val hasError = listOf(titleEmpty, descriptionEmpty).any { it }
+
+        isValid(!hasError)
     }
 
     fun navigateBack() {
@@ -92,23 +110,69 @@ class TaskScreenViewModel @Inject constructor(
     }
 
     fun updateTask() {
-        viewModelScope.launch {
-            tasksRepository.updateTask(
-                task = currentState.run {
-                    Task(
-                        id = taskId,
-                        title = title,
-                        description = description,
-                        priority = priority
+        validateFields { canSaveTask ->
+            viewModelScope.launch {
+                if (canSaveTask) {
+                    tasksRepository.updateTask(
+                        task = currentState.run {
+                            Task(
+                                id = taskId,
+                                title = title,
+                                description = description,
+                                priority = priority,
+                                timestamp = timestamp
+                            )
+                        }
                     )
+                    setEffect(TaskScreenEffect.ShowToast(text = AppText.StringResText(textRes = R.string.task_updated)))
+                    navigateBack()
+                } else {
+                    setEffect(TaskScreenEffect.ShowToast(text = AppText.StringResText(textRes = R.string.fields_empty)))
+
                 }
-            )
-            setEffect(TaskScreenEffect.ShowToast(text = AppText.StringResText(textRes = R.string.task_updated)))
-            navigateBack()
+            }
         }
     }
 
     fun deleteTask() {
+        setState {
+            copy(showDeleteTaskDialog = true)
+        }
+    }
 
+    fun onPriorityDropdownClicked() {
+        setState {
+            copy(
+                priorityDropdownExpanded = !priorityDropdownExpanded
+            )
+        }
+    }
+
+    fun dismissPriorityDropdown() {
+        setState {
+            copy(
+                priorityDropdownExpanded = false
+            )
+        }
+    }
+
+    fun deleteTaskConfirmed() {
+        viewModelScope.launch {
+            tasksRepository.deleteTaskById(taskId = currentState.taskId)
+            setEffect(
+                TaskScreenEffect.ShowToast(
+                    text = AppText.StringResText(textRes = R.string.task_deleted)
+                )
+            )
+            navigateBack()
+        }
+    }
+
+    fun dismissDeleteTaskDialog() {
+        setState {
+            copy(
+                showDeleteTaskDialog = false
+            )
+        }
     }
 }

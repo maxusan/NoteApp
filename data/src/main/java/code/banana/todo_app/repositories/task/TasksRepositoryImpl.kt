@@ -43,6 +43,10 @@ class TasksRepositoryImpl @Inject constructor(
         tasksDao.deleteTask(task = task.toData())
     }
 
+    override suspend fun deleteTaskById(taskId: Int) {
+        tasksDao.deleteTaskById(taskId = taskId)
+    }
+
     override suspend fun deleteAllTasks() {
         tasksDao.deleteAllTasks()
     }

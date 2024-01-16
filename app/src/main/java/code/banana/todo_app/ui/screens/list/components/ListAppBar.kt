@@ -2,7 +2,6 @@ package code.banana.todo_app.ui.screens.list.components
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -10,7 +9,6 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import code.banana.todo_app.R
 import code.banana.todo_app.components.PriorityItem
 import code.banana.todo_app.models.Priority

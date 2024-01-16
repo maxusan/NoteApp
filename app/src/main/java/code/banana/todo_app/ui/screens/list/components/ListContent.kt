@@ -75,9 +75,10 @@ fun DisplayTasks(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        items(allTasks, key = { task ->
-            task.id
-        }) { task ->
+        items(allTasks,
+            key = { task ->
+                task.id
+            }) { task ->
             TaskItem(
                 task = task,
                 navigateToTaskScreen = navigateToTaskScreen,
