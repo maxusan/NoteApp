@@ -8,4 +8,8 @@ interface LocalCacheRepository {
     suspend fun persistFilterState(priority: Priority)
 
     fun readFilterKey(): Flow<Priority>
+
+    suspend fun persistIsSystemDarkTheme(isSystemDarkTheme: Boolean)
+
+    fun readIsSystemDarkTheme(): Flow<Boolean>
 }

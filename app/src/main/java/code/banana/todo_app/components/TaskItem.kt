@@ -17,11 +17,13 @@ import androidx.compose.material.DismissDirection
 import androidx.compose.material.DismissValue
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.Text
+import androidx.compose.material.ThresholdConfig
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.rememberDismissState
@@ -55,9 +57,15 @@ fun TaskItem(
     onSwipeToDelete: (taskId: Int) -> Unit,
     onTaskClicked: (taskId: Int) -> Unit,
 ) {
-    val dismissState = rememberDismissState()
+    val dismissState = rememberDismissState(
+        confirmStateChange = {
+            it != DismissValue.DismissedToEnd
+        }
+    )
     val dismissDirection = dismissState.dismissDirection
-    val isDismissed = dismissState.isDismissed(DismissDirection.EndToStart)
+    val isDismissed =
+        dismissState.isDismissed(DismissDirection.EndToStart)
+
 
     LaunchedEffect(isDismissed && dismissDirection == DismissDirection.EndToStart) {
         if (isDismissed && dismissDirection == DismissDirection.EndToStart) {
@@ -65,6 +73,7 @@ fun TaskItem(
             onSwipeToDelete(task.id)
         }
     }
+
     val degrees by animateFloatAsState(
         targetValue = if (dismissState.targetValue == DismissValue.Default)
             0f
@@ -76,7 +85,11 @@ fun TaskItem(
         state = dismissState,
         background = {
             SwipeToDeleteBackground(degrees = degrees)
-        }, modifier = modifier
+        }, modifier = modifier,
+        directions = setOf(DismissDirection.EndToStart),
+        dismissThresholds = {
+            FractionalThreshold(0.5f)
+        }
     ) {
         Surface(
             modifier = Modifier

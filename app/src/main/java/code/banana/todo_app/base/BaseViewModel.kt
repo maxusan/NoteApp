@@ -35,5 +35,4 @@ abstract class BaseViewModel<State : UiState, Effect : UiEffect>() : ViewModel()
     protected fun setEffect(effect: Effect) {
         viewModelScope.launch { _effect.emit(effect) }
     }
-
 }

@@ -21,8 +21,10 @@ import code.banana.todo_app.ui.screens.list.ListScreenState
 @Composable
 fun ListScreenTopBar(
     searchText: String,
+    onSearchIconClicked: () -> Unit,
+    onCloseSearchClicked: () -> Unit,
+    onBurgerClicked: () -> Unit,
     onSearchTextChanged: (String) -> Unit,
-    onClearSearchClicked: () -> Unit,
     onSortClicked: () -> Unit,
     onFilterItemClicked: () -> Unit,
     onFilterPicked: (Priority) -> Unit,
@@ -30,36 +32,52 @@ fun ListScreenTopBar(
     dismissFilterDropdown: () -> Unit,
     priorityFilter: Priority,
     sort: ListScreenState.ListSortState,
+    topBarState: ListScreenState.TopBarState,
 ) {
     val sortIconScaleY by animateFloatAsState(
         targetValue = if (sort == ListScreenState.ListSortState.ASCENDING) 1f else -1f,
         label = ""
     )
-    val trailingIconVisible by remember(searchText) {
-        derivedStateOf { searchText.isNotEmpty() }
+    val showSearchIcon by remember(topBarState) {
+        derivedStateOf {
+            topBarState == ListScreenState.TopBarState.Default
+        }
     }
     TopAppBar(
         title = {
-            TextField(
-                value = searchText,
-                onValueChange = onSearchTextChanged,
-                placeholder = { Text(text = stringResource(id = R.string.search_tasks)) },
-                trailingIcon = {
-                    if (trailingIconVisible)
-                        IconButton(onClick = onClearSearchClicked) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_close),
-                                contentDescription = stringResource(id = R.string.clear_searchfield)
-                            )
-                        }
-                },
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.Transparent
-                ),
-                modifier = Modifier.fillMaxWidth()
-            )
+            when (topBarState) {
+                ListScreenState.TopBarState.Default -> Text(text = stringResource(id = R.string.app_name))
+                ListScreenState.TopBarState.Search -> {
+                    TextField(
+                        value = searchText,
+                        onValueChange = onSearchTextChanged,
+                        placeholder = { Text(text = stringResource(id = R.string.search_tasks)) },
+                        trailingIcon = {
+                            IconButton(onClick = onCloseSearchClicked) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_close),
+                                    contentDescription = stringResource(id = R.string.clear_searchfield)
+                                )
+                            }
+                        },
+                        colors = TextFieldDefaults.textFieldColors(
+                            backgroundColor = Color.Transparent
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
         },
         actions = {
+            if (showSearchIcon)
+                IconButton(onClick = onSearchIconClicked) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_search),
+                        contentDescription = stringResource(id = R.string.search),
+                        modifier = Modifier
+                    )
+                }
+
             IconButton(onClick = onSortClicked) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_sort),
@@ -97,6 +115,15 @@ fun ListScreenTopBar(
                         PriorityItem(priority = Priority.NONE)
                     }
                 }
+            }
+        },
+        navigationIcon = {
+            IconButton(onClick = onBurgerClicked) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_burger_menu),
+                    contentDescription = stringResource(id = R.string.menu),
+                    modifier = Modifier.scale(1f, sortIconScaleY)
+                )
             }
         },
         modifier = Modifier.fillMaxWidth()

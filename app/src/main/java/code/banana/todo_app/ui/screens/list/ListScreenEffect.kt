@@ -7,4 +7,5 @@ sealed class ListScreenEffect : UiEffect {
 
     class ShowToast(val text: AppText) : ListScreenEffect()
 
+    data object OpenDrawer: ListScreenEffect()
 }

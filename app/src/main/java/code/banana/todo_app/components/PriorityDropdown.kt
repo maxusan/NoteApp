@@ -1,11 +1,11 @@
 package code.banana.todo_app.components
 
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -54,11 +54,12 @@ fun PriorityDropdown(
         verticalAlignment = Alignment.CenterVertically
 
     ) {
-        Canvas(modifier = Modifier
-            .size(PRIORITY_INDICATOR_SIZE)
-            .padding(start = MEDIUM_PADDING), onDraw = {
-            drawCircle(color = priority.colorByPriority())
-        })
+        Box(
+            modifier = Modifier
+                .padding(start = MEDIUM_PADDING)
+                .size(PRIORITY_INDICATOR_SIZE)
+                .background(priority.colorByPriority(), shape = CircleShape)
+        )
         Text(
             text = priority.name,
             style = MaterialTheme.typography.subtitle2,

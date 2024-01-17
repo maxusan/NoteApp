@@ -30,23 +30,7 @@ fun ListContent(
     onSwipeToDelete: (taskId: Int) -> Unit,
     navigateToTaskScreen: (taskId: Int) -> Unit,
 ) {
-    HandleListContent(
-        modifier = modifier,
-        listState = listState,
-        tasks = state.tasks,
-        onSwipeToDelete = onSwipeToDelete,
-        navigateToTaskScreen = navigateToTaskScreen
-    )
-}
-
-@Composable
-fun HandleListContent(
-    modifier: Modifier = Modifier,
-    listState: LazyListState = rememberLazyListState(),
-    tasks: List<Task>,
-    onSwipeToDelete: (taskId: Int) -> Unit,
-    navigateToTaskScreen: (taskId: Int) -> Unit,
-) {
+    val tasks = state.tasks
     if (tasks.isEmpty()) {
         EmptyContent()
     } else {
@@ -73,7 +57,8 @@ fun DisplayTasks(
         verticalArrangement = Arrangement.spacedBy(4.dp),
         state = listState
     ) {
-        items(items = allTasks,
+        items(
+            items = allTasks,
             key = { task ->
                 task.id
             }) { task ->

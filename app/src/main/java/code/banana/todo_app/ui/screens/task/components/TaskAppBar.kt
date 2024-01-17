@@ -112,16 +112,6 @@ fun ExistingTaskAppBarActions(
     updateTask: () -> Unit,
     deleteTask: () -> Unit,
 ) {
-//    var openDialog by remember {
-//        mutableStateOf(false)
-//    }
-//    DisplayAlertDialog(
-//        title = stringResource(id = R.string.delete_task, task.title),
-//        message = stringResource(id = R.string.delete_task_confirmation, task.title),
-//        openDialog = openDialog,
-//        closeDialog = { openDialog = false },
-//        onYesClicked = { navigateToListScreen(Action.DELETE) })
-
     DeleteAction(onDeleteClicked = deleteTask)
     UpdateAction(onUpdateClicked = updateTask)
 }

@@ -7,7 +7,9 @@ data class ListScreenState(
     val isLoading: Boolean = false,
     val tasks: List<Task> = emptyList(),
     val filterDropdownExpanded: Boolean = false,
+    val showConfirmDeleteAllDialog: Boolean = false,
     val listSortState: ListSortState = ListSortState.ASCENDING,
+    val topBarState: TopBarState = TopBarState.Default,
 ) : UiState {
 
     enum class ListSortState {
@@ -15,4 +17,8 @@ data class ListScreenState(
         DESCENDING
     }
 
+    enum class TopBarState{
+        Default,
+        Search
+    }
 }
