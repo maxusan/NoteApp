@@ -27,7 +27,7 @@ class TasksRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getSelectedTask(taskId: Int): Task? {
+    override suspend fun getTaskById(taskId: Int): Task? {
         return tasksDao.getSelectedTask(taskId = taskId)?.toDomain()
     }
 
@@ -37,10 +37,6 @@ class TasksRepositoryImpl @Inject constructor(
 
     override suspend fun updateTask(task: Task) {
         tasksDao.updateTask(task = task.toData())
-    }
-
-    override suspend fun deleteTask(task: Task) {
-        tasksDao.deleteTask(task = task.toData())
     }
 
     override suspend fun deleteTaskById(taskId: Int) {

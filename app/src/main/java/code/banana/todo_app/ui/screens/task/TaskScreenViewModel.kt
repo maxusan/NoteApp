@@ -9,7 +9,10 @@ import code.banana.todo_app.models.Priority
 import code.banana.todo_app.models.Task
 import code.banana.todo_app.navigation.Destination
 import code.banana.todo_app.navigation.navigator.AppNavigator
-import code.banana.todo_app.repositories.task.TasksRepository
+import code.banana.todo_app.usecase.task.DeleteTaskByIdUseCase
+import code.banana.todo_app.usecase.task.GetTaskByIdUseCase
+import code.banana.todo_app.usecase.task.InsertTaskUseCase
+import code.banana.todo_app.usecase.task.UpdateTaskUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,7 +21,10 @@ import javax.inject.Inject
 class TaskScreenViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val appNavigator: AppNavigator,
-    private val tasksRepository: TasksRepository,
+    private val getTaskByIdUseCase: GetTaskByIdUseCase,
+    private val insertTaskUseCase: InsertTaskUseCase,
+    private val updateTaskUseCase: UpdateTaskUseCase,
+    private val deleteTaskByIdUseCase: DeleteTaskByIdUseCase,
 ) : BaseViewModel<TaskScreenState, TaskScreenEffect>() {
 
     init {
@@ -27,7 +33,7 @@ class TaskScreenViewModel @Inject constructor(
                 ?: throw IllegalArgumentException("Task id is null")
 
         viewModelScope.launch {
-            val task: Task? = tasksRepository.getSelectedTask(taskId)
+            val task: Task? = getTaskByIdUseCase(taskId)
             setState {
                 copy(
                     taskId = taskId,
@@ -75,7 +81,7 @@ class TaskScreenViewModel @Inject constructor(
         validateFields { canSaveTask ->
             viewModelScope.launch {
                 if (canSaveTask) {
-                    tasksRepository.insertTask(
+                    insertTaskUseCase(
                         task = currentState.run {
                             Task(
                                 title = title,
@@ -113,7 +119,7 @@ class TaskScreenViewModel @Inject constructor(
         validateFields { canSaveTask ->
             viewModelScope.launch {
                 if (canSaveTask) {
-                    tasksRepository.updateTask(
+                    updateTaskUseCase(
                         task = currentState.run {
                             Task(
                                 id = taskId,
@@ -158,7 +164,7 @@ class TaskScreenViewModel @Inject constructor(
 
     fun deleteTaskConfirmed() {
         viewModelScope.launch {
-            tasksRepository.deleteTaskById(taskId = currentState.taskId)
+            deleteTaskByIdUseCase(taskId = currentState.taskId)
             setEffect(
                 TaskScreenEffect.ShowToast(
                     text = AppText.StringResText(textRes = R.string.task_deleted)
