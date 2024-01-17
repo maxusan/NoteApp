@@ -8,7 +8,10 @@ import code.banana.todo_app.models.Priority
 import code.banana.todo_app.navigation.Destination
 import code.banana.todo_app.navigation.navigator.AppNavigator
 import code.banana.todo_app.usecase.localcache.PersistFilterStateUseCase
+import code.banana.todo_app.usecase.localcache.PersistIsSystemDarkModeUseCase
 import code.banana.todo_app.usecase.localcache.ReadFilterKeyUseCase
+import code.banana.todo_app.usecase.localcache.ReadIsSystemDarkThemeUseCase
+import code.banana.todo_app.usecase.task.DeleteAllTasksUseCase
 import code.banana.todo_app.usecase.task.DeleteTaskByIdUseCase
 import code.banana.todo_app.usecase.task.GetAllTasksUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,9 +28,12 @@ import javax.inject.Inject
 class ListScreenViewModel @Inject constructor(
     private val appNavigator: AppNavigator,
     private val persistFilterStateUseCase: PersistFilterStateUseCase,
+    private val persistIsSystemDarkModeUseCase: PersistIsSystemDarkModeUseCase,
+    private val readIsSystemDarkThemeUseCase: ReadIsSystemDarkThemeUseCase,
     private val readFilterKeyUseCase: ReadFilterKeyUseCase,
     private val getAllTasksUseCase: GetAllTasksUseCase,
-    private val deleteTaskByIdUseCase: DeleteTaskByIdUseCase
+    private val deleteTaskByIdUseCase: DeleteTaskByIdUseCase,
+    private val deleteAllTasksUseCase: DeleteAllTasksUseCase,
 ) : BaseViewModel<ListScreenState, ListScreenEffect>() {
 
     private val _searchQuery: MutableStateFlow<String> = MutableStateFlow("")
@@ -123,7 +130,7 @@ class ListScreenViewModel @Inject constructor(
         }
     }
 
-    fun clearSearchQuery() {
+    private fun clearSearchQuery() {
         setSearchQuery("")
     }
 
@@ -142,5 +149,48 @@ class ListScreenViewModel @Inject constructor(
             )
         }
         clearSearchQuery()
+    }
+
+    fun openDrawer() {
+        setEffect(
+            ListScreenEffect.OpenDrawer
+        )
+    }
+
+    fun onDeleteAllClicked() {
+        setState {
+            copy(
+                showConfirmDeleteAllDialog = true
+            )
+        }
+    }
+
+    fun dismissConfirmDeleteAllDialog() {
+        setState {
+            copy(
+                showConfirmDeleteAllDialog = false
+            )
+        }
+    }
+
+    fun deleteAllTasksConfirmed() {
+        setState {
+            copy(
+                showConfirmDeleteAllDialog = false
+            )
+        }
+        viewModelScope.launch {
+            deleteAllTasksUseCase()
+            setEffect(ListScreenEffect.ShowToast(AppText.StringResText(R.string.all_tasks_deleted)))
+        }
+    }
+
+    fun onSwitchThemeClicked() {
+        viewModelScope.launch {
+            val isSystemDarkTheme = readIsSystemDarkThemeUseCase().first()
+            persistIsSystemDarkModeUseCase(
+                !isSystemDarkTheme
+            )
+        }
     }
 }

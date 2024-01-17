@@ -5,7 +5,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import code.banana.todo_app.navigation.AppNavHost
@@ -20,9 +23,14 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ToDoAppTheme {
+            val viewModel: MainViewModel = hiltViewModel()
+            val lifecycleOwner = LocalLifecycleOwner.current
+            val isSystemDarkTheme by viewModel.isSystemDarkTheme.collectAsStateWithLifecycle(
+                initialValue = true,
+                lifecycle = lifecycleOwner.lifecycle,
+            )
+            ToDoAppTheme(darkTheme = isSystemDarkTheme) {
                 val navController = rememberNavController()
-                val viewModel: MainViewModel = hiltViewModel()
                 NavigationEffects(
                     navigationFlow = viewModel.navigationFlow,
                     navHostController = navController

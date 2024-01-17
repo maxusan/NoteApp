@@ -10,7 +10,7 @@ import code.banana.todo_app.R
  * Created by Maksym Kovalchuk on 2/15/2023.
  */
 @Composable
-fun DisplayAlertDialog(
+fun AppAlertDialog(
     title: String,
     message: String,
     openDialog: Boolean,

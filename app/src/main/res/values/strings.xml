@@ -4,7 +4,7 @@
     <string name="search_tasks">Search Tasks</string>
     <string name="sort_tasks">Sort Tasks</string>
     <string name="filter_tasks">FilterTasks</string>
-    <string name="delete_all_action">Delete All</string>
+    <string name="delete_all_action">Delete All Tasks</string>
     <string name="close_icon">Close Icon</string>
     <string name="list_screen_title">Tasks</string>
     <string name="search_placeholder_text">Search</string>
@@ -22,10 +22,14 @@
     <string name="delete_task">Remove \'%1$s\'?</string>
     <string name="delete_task_confirmation">Are you sure you want to remove  \'%1$s\'?</string>
     <string name="delete_all_tasks">Remove All Tasks?</string>
+    <string name="all_tasks_deleted">Tasks deleted</string>
     <string name="are_you_sure">Are you sure want to delete all tasks?</string>
     <string name="task_created">Task created</string>
     <string name="task_updated">Task updated</string>
     <string name="task_deleted">Task deleted</string>
     <string name="clear_searchfield">Clear search text</string>
     <string name="search">Search</string>
+    <string name="menu">Menu</string>
+    <string name="version">Version: %1$s</string>
+    <string name="switch_theme">Switch Theme</string>
 </resources>

@@ -10,4 +10,5 @@ object Constants {
 
     const val PREFERENCES_NAME = "todo_preferences"
     const val FILTER_KEY = "filter_state"
+    const val IS_SYSTEM_DAK_THEME_KEY = "is_system_dark_theme"
 }

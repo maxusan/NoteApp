@@ -23,6 +23,7 @@ fun ListScreenTopBar(
     searchText: String,
     onSearchIconClicked: () -> Unit,
     onCloseSearchClicked: () -> Unit,
+    onBurgerClicked: () -> Unit,
     onSearchTextChanged: (String) -> Unit,
     onSortClicked: () -> Unit,
     onFilterItemClicked: () -> Unit,
@@ -114,6 +115,15 @@ fun ListScreenTopBar(
                         PriorityItem(priority = Priority.NONE)
                     }
                 }
+            }
+        },
+        navigationIcon = {
+            IconButton(onClick = onBurgerClicked) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_burger_menu),
+                    contentDescription = stringResource(id = R.string.menu),
+                    modifier = Modifier.scale(1f, sortIconScaleY)
+                )
             }
         },
         modifier = Modifier.fillMaxWidth()

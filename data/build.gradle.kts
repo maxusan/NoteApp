@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "code.banana.todo_app"
+    namespace = "code.banana.data"
     compileSdk = AppConfig.compileSdk
 
     defaultConfig {

@@ -13,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import code.banana.todo_app.R
-import code.banana.todo_app.components.DisplayAlertDialog
+import code.banana.todo_app.components.AppAlertDialog
 import code.banana.todo_app.ui.screens.task.components.TaskAppBar
 import code.banana.todo_app.ui.screens.task.components.TaskContent
 import code.banana.todo_app.util.getText
@@ -71,7 +71,7 @@ fun TaskScreen(
             )
     }
 
-    DisplayAlertDialog(
+    AppAlertDialog(
         title = stringResource(id = R.string.delete_task, state.title),
         message = stringResource(id = R.string.delete_task_confirmation, state.title),
         openDialog = state.showDeleteTaskDialog,
