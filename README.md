@@ -9,6 +9,8 @@ Features:
 - Sort by date(descending and ascending)
 - Storing data in the local DB(Room) + dataStore
 - Swipe-to-delete item
+- Delete All Tasks
+- Switch between themes(Dark and Light)
 
 For the UI I've used Jetpack Compose
 For the Dependency Injection I've used Dagger/Hilt
