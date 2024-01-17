@@ -2,9 +2,9 @@ package code.banana.todo_app.di
 
 import android.content.Context
 import androidx.room.Room
+import code.banana.todo_app.Constants
 import code.banana.todo_app.db.TasksDao
 import code.banana.todo_app.db.TasksDatabase
-import code.banana.todo_app.util.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

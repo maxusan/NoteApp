@@ -27,7 +27,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import code.banana.todo_app.R
 import code.banana.todo_app.ui.theme.LOGO_HEIGHT
 import code.banana.todo_app.ui.theme.splashScreenBackground
-import code.banana.todo_app.util.Constants.SPLASH_SCREEN_DELAY
 import kotlinx.coroutines.delay
 
 /**
