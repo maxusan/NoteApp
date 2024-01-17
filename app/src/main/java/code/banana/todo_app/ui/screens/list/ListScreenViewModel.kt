@@ -7,8 +7,6 @@ import code.banana.todo_app.base.BaseViewModel
 import code.banana.todo_app.models.Priority
 import code.banana.todo_app.navigation.Destination
 import code.banana.todo_app.navigation.navigator.AppNavigator
-import code.banana.todo_app.repositories.cache.LocalCacheRepository
-import code.banana.todo_app.repositories.task.TasksRepository
 import code.banana.todo_app.usecase.localcache.PersistFilterStateUseCase
 import code.banana.todo_app.usecase.localcache.ReadFilterKeyUseCase
 import code.banana.todo_app.usecase.task.DeleteTaskByIdUseCase
@@ -127,5 +125,22 @@ class ListScreenViewModel @Inject constructor(
 
     fun clearSearchQuery() {
         setSearchQuery("")
+    }
+
+    fun showSearchField() {
+        setState {
+            copy(
+                topBarState = ListScreenState.TopBarState.Search
+            )
+        }
+    }
+
+    fun closeSearch() {
+        setState {
+            copy(
+                topBarState = ListScreenState.TopBarState.Default
+            )
+        }
+        clearSearchQuery()
     }
 }

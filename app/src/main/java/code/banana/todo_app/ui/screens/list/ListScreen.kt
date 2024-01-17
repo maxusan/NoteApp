@@ -55,15 +55,17 @@ fun ListScreen(
         topBar = {
             ListScreenTopBar(
                 searchText = searchText,
+                onSearchIconClicked = viewModel::showSearchField,
+                onCloseSearchClicked = viewModel::closeSearch,
                 onSearchTextChanged = viewModel::setSearchQuery,
-                onClearSearchClicked = viewModel::clearSearchQuery,
                 onSortClicked = viewModel::onSortClicked,
                 onFilterItemClicked = viewModel::onFilterItemClicked,
                 onFilterPicked = viewModel::onFilterPicked,
                 filterDropdownExpanded = state.filterDropdownExpanded,
                 dismissFilterDropdown = viewModel::dismissFilterDropdown,
                 priorityFilter = priorityFilter,
-                sort = sort
+                sort = sort,
+                topBarState = state.topBarState,
             )
         },
         content = {
