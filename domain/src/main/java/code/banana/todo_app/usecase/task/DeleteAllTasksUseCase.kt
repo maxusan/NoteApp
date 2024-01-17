@@ -5,7 +5,7 @@ import javax.inject.Inject
 
 class DeleteAllTasksUseCase @Inject constructor(
     private val tasksRepository: TasksRepository,
-){
+) {
 
     suspend operator fun invoke() {
         tasksRepository.deleteAllTasks()

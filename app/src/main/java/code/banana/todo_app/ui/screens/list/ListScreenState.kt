@@ -13,7 +13,7 @@ data class ListScreenState(
     val filterDropdownExpanded: Boolean = false,
     val showConfirmDeleteAllDialog: Boolean = false,
     val topBarState: TopBarState = TopBarState.Default,
-    val isSystemDarkTheme: Boolean = false
+    val isSystemDarkTheme: Boolean = false,
 ) : UiState {
 
     enum class ListSortState {
@@ -21,7 +21,7 @@ data class ListScreenState(
         DESCENDING
     }
 
-    enum class TopBarState{
+    enum class TopBarState {
         Default,
         Search
     }

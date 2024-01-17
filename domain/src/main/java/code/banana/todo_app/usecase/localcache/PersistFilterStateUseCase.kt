@@ -5,7 +5,7 @@ import code.banana.todo_app.repositories.cache.LocalCacheRepository
 import javax.inject.Inject
 
 class PersistFilterStateUseCase @Inject constructor(
-    private val localCacheRepository: LocalCacheRepository
+    private val localCacheRepository: LocalCacheRepository,
 ) {
 
     suspend operator fun invoke(priority: Priority) {

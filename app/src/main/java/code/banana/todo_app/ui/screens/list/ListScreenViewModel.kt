@@ -208,6 +208,6 @@ class ListScreenViewModel @Inject constructor(
         val searchText: String,
         val priorityFilter: Priority,
         val sort: ListScreenState.ListSortState,
-        val isSystemDarkTheme: Boolean
+        val isSystemDarkTheme: Boolean,
     )
 }
