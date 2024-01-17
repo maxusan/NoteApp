@@ -2,8 +2,18 @@ package code.banana.todo_app.ui.screens.list.components
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
@@ -13,6 +23,7 @@ import code.banana.todo_app.R
 import code.banana.todo_app.components.PriorityItem
 import code.banana.todo_app.models.Priority
 import code.banana.todo_app.ui.screens.list.ListScreenState
+import code.banana.todo_app.util.drawPriorityBadge
 
 /**
  * Created by Maksym Kovalchuk on 2/14/2023.
@@ -85,10 +96,14 @@ fun ListScreenTopBar(
                     modifier = Modifier.scale(1f, sortIconScaleY)
                 )
             }
-            IconButton(onClick = onFilterItemClicked) {
+            IconButton(
+                onClick = onFilterItemClicked,
+                modifier = Modifier
+            ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_filter_list),
-                    contentDescription = stringResource(id = R.string.filter_tasks)
+                    contentDescription = stringResource(id = R.string.filter_tasks),
+                    modifier = Modifier.drawPriorityBadge(priorityFilter)
                 )
                 DropdownMenu(
                     expanded = filterDropdownExpanded,
@@ -122,7 +137,7 @@ fun ListScreenTopBar(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_burger_menu),
                     contentDescription = stringResource(id = R.string.menu),
-                    modifier = Modifier.scale(1f, sortIconScaleY)
+                    modifier = Modifier
                 )
             }
         },

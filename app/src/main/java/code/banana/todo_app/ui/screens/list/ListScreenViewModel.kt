@@ -5,6 +5,7 @@ import code.banana.todo_app.R
 import code.banana.todo_app.base.AppText
 import code.banana.todo_app.base.BaseViewModel
 import code.banana.todo_app.models.Priority
+import code.banana.todo_app.models.Task
 import code.banana.todo_app.navigation.Destination
 import code.banana.todo_app.navigation.navigator.AppNavigator
 import code.banana.todo_app.usecase.localcache.PersistFilterStateUseCase
@@ -15,8 +16,8 @@ import code.banana.todo_app.usecase.task.DeleteAllTasksUseCase
 import code.banana.todo_app.usecase.task.DeleteTaskByIdUseCase
 import code.banana.todo_app.usecase.task.GetAllTasksUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
@@ -36,39 +37,47 @@ class ListScreenViewModel @Inject constructor(
     private val deleteAllTasksUseCase: DeleteAllTasksUseCase,
 ) : BaseViewModel<ListScreenState, ListScreenEffect>() {
 
-    private val _searchQuery: MutableStateFlow<String> = MutableStateFlow("")
-    val searchQuery = _searchQuery.asStateFlow()
-
-    private val _sort: MutableStateFlow<ListScreenState.ListSortState> =
+    private val searchQuery: MutableStateFlow<String> = MutableStateFlow("")
+    private val sort: MutableStateFlow<ListScreenState.ListSortState> =
         MutableStateFlow(ListScreenState.ListSortState.ASCENDING)
-    val sort = _sort.asStateFlow()
 
-    private val _priorityFilter: MutableStateFlow<Priority> = MutableStateFlow(Priority.NONE)
-    val priorityFilter = _priorityFilter.asStateFlow()
-
-    private val tasksFlow = combine(
+    private val combinedResultFlow: Flow<CombineResult> = combine(
         getAllTasksUseCase(),
         searchQuery,
         readFilterKeyUseCase(),
-        sort
-    ) { tasks, query, priority, sort ->
+        sort,
+        readIsSystemDarkThemeUseCase()
+    ) { tasks, query, priority, sort, isSystemDarkTheme ->
         val filteredTasks = tasks.filter {
             it.title.contains(query, ignoreCase = true)
         }.filter {
             if (priority == Priority.NONE) true else it.priority == priority
+        }.sortedBy {
+            when (sort) {
+                ListScreenState.ListSortState.ASCENDING -> it.timestamp
+                ListScreenState.ListSortState.DESCENDING -> -it.timestamp
+            }
         }
-        when (sort) {
-            ListScreenState.ListSortState.ASCENDING -> filteredTasks.sortedBy { it.title.lowercase() }
-            ListScreenState.ListSortState.DESCENDING -> filteredTasks.sortedByDescending { it.title.lowercase() }
-        }
+
+        CombineResult(
+            tasks = filteredTasks,
+            searchText = query,
+            priorityFilter = priority,
+            sort = sort,
+            isSystemDarkTheme = isSystemDarkTheme
+        )
     }
 
     init {
         viewModelScope.launch {
-            tasksFlow.collectLatest {
+            combinedResultFlow.collectLatest { result ->
                 setState {
                     copy(
-                        tasks = it
+                        tasks = result.tasks,
+                        searchText = result.searchText,
+                        priorityFilter = result.priorityFilter,
+                        sort = result.sort,
+                        isSystemDarkTheme = result.isSystemDarkTheme
                     )
                 }
             }
@@ -94,12 +103,12 @@ class ListScreenViewModel @Inject constructor(
         }
     }
 
-    fun setSearchQuery(searchQuery: String) {
-        _searchQuery.update { searchQuery }
+    fun setSearchQuery(query: String) {
+        searchQuery.update { query }
     }
 
     fun onSortClicked() {
-        _sort.update { currentState ->
+        sort.update { currentState ->
             when (currentState) {
                 ListScreenState.ListSortState.ASCENDING -> ListScreenState.ListSortState.DESCENDING
                 ListScreenState.ListSortState.DESCENDING -> ListScreenState.ListSortState.ASCENDING
@@ -189,8 +198,16 @@ class ListScreenViewModel @Inject constructor(
         viewModelScope.launch {
             val isSystemDarkTheme = readIsSystemDarkThemeUseCase().first()
             persistIsSystemDarkModeUseCase(
-                !isSystemDarkTheme
+                !currentState.isSystemDarkTheme
             )
         }
     }
+
+    class CombineResult(
+        val tasks: List<Task>,
+        val searchText: String,
+        val priorityFilter: Priority,
+        val sort: ListScreenState.ListSortState,
+        val isSystemDarkTheme: Boolean
+    )
 }

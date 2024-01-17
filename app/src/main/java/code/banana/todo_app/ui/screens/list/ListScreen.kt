@@ -46,9 +46,6 @@ fun ListScreen(
     viewModel: ListScreenViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val searchText by viewModel.searchQuery.collectAsStateWithLifecycle()
-    val priorityFilter by viewModel.priorityFilter.collectAsStateWithLifecycle()
-    val sort by viewModel.sort.collectAsStateWithLifecycle()
 
     val listState = rememberLazyListState()
 
@@ -91,7 +88,7 @@ fun ListScreen(
             scaffoldState = scaffoldState,
             topBar = {
                 ListScreenTopBar(
-                    searchText = searchText,
+                    searchText = state.searchText,
                     onSearchIconClicked = viewModel::showSearchField,
                     onCloseSearchClicked = viewModel::closeSearch,
                     onBurgerClicked = viewModel::openDrawer,
@@ -101,8 +98,8 @@ fun ListScreen(
                     onFilterPicked = viewModel::onFilterPicked,
                     filterDropdownExpanded = state.filterDropdownExpanded,
                     dismissFilterDropdown = viewModel::dismissFilterDropdown,
-                    priorityFilter = priorityFilter,
-                    sort = sort,
+                    priorityFilter = state.priorityFilter,
+                    sort = state.sort,
                     topBarState = state.topBarState,
                 )
             },
