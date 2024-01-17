@@ -15,7 +15,6 @@ fun AppNavHost(
     navController: NavHostController,
     startDestination: Destination,
 ) {
-    val context = LocalContext.current
     NavHost(
         modifier = modifier,
         navController = navController,

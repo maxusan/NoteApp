@@ -50,7 +50,7 @@ fun SplashScreen(
 
     LaunchedEffect(true) {
         startAnimation = true
-        delay(300)
+        delay(3000L)
         viewModel.navigateToList()
     }
     Box(
