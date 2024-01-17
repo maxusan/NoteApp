@@ -9,6 +9,10 @@ import code.banana.todo_app.navigation.Destination
 import code.banana.todo_app.navigation.navigator.AppNavigator
 import code.banana.todo_app.repositories.cache.LocalCacheRepository
 import code.banana.todo_app.repositories.task.TasksRepository
+import code.banana.todo_app.usecase.localcache.PersistFilterStateUseCase
+import code.banana.todo_app.usecase.localcache.ReadFilterKeyUseCase
+import code.banana.todo_app.usecase.task.DeleteTaskByIdUseCase
+import code.banana.todo_app.usecase.task.GetAllTasksUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,8 +25,10 @@ import javax.inject.Inject
 @HiltViewModel
 class ListScreenViewModel @Inject constructor(
     private val appNavigator: AppNavigator,
-    private val localCacheRepository: LocalCacheRepository,
-    private val tasksRepository: TasksRepository,
+    private val persistFilterStateUseCase: PersistFilterStateUseCase,
+    private val readFilterKeyUseCase: ReadFilterKeyUseCase,
+    private val getAllTasksUseCase: GetAllTasksUseCase,
+    private val deleteTaskByIdUseCase: DeleteTaskByIdUseCase
 ) : BaseViewModel<ListScreenState, ListScreenEffect>() {
 
     private val _searchQuery: MutableStateFlow<String> = MutableStateFlow("")
@@ -36,9 +42,9 @@ class ListScreenViewModel @Inject constructor(
     val priorityFilter = _priorityFilter.asStateFlow()
 
     private val tasksFlow = combine(
-        tasksRepository.getAllTasks(),
+        getAllTasksUseCase(),
         searchQuery,
-        localCacheRepository.readFilterKey(),
+        readFilterKeyUseCase(),
         sort
     ) { tasks, query, priority, sort ->
         val filteredTasks = tasks.filter {
@@ -78,7 +84,7 @@ class ListScreenViewModel @Inject constructor(
 
     fun onSwipeToDelete(taskId: Int) {
         viewModelScope.launch {
-            tasksRepository.deleteTaskById(taskId)
+            deleteTaskByIdUseCase(taskId)
             setEffect(ListScreenEffect.ShowToast(AppText.StringResText(R.string.task_deleted)))
         }
     }
@@ -106,7 +112,7 @@ class ListScreenViewModel @Inject constructor(
 
     fun onFilterPicked(priority: Priority) {
         viewModelScope.launch {
-            localCacheRepository.persistFilterState(priority)
+            persistFilterStateUseCase(priority)
             dismissFilterDropdown()
         }
     }
