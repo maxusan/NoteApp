@@ -12,7 +12,7 @@ import javax.inject.Inject
 /**
  * Created by Maksym Kovalchuk on 2/13/2023.
  */
-class TasksRepositoryImpl @Inject constructor(
+internal class TasksRepositoryImpl @Inject constructor(
     private val tasksDao: TasksDao,
     private val dateUtils: DateUtils,
 ) : TasksRepository {

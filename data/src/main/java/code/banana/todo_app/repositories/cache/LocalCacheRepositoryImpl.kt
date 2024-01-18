@@ -21,7 +21,7 @@ import javax.inject.Inject
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = PREFERENCES_NAME)
 
-class LocalCacheRepositoryImpl @Inject constructor(
+internal class LocalCacheRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
 ) : LocalCacheRepository {
 
