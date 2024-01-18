@@ -12,7 +12,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     appNavigator: AppNavigator,
-    val readIsSystemDarkThemeUseCase: ReadIsSystemDarkThemeUseCase,
+    readIsSystemDarkThemeUseCase: ReadIsSystemDarkThemeUseCase,
 ) : ViewModel() {
 
     val navigationFlow = appNavigator.navigationFlow

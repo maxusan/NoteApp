@@ -1,5 +1,7 @@
 package code.banana.todo_app.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -18,8 +20,9 @@ fun AppNavHost(
         modifier = modifier,
         navController = navController,
         startDestination = startDestination.fullRoute,
+        enterTransition = { EnterTransition.None},
+        exitTransition = { ExitTransition.None},
     ) {
-
         splashComposable()
         tasksListComposable()
         taskDetailsComposable()
