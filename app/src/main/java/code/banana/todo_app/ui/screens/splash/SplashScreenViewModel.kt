@@ -4,7 +4,6 @@ import androidx.lifecycle.viewModelScope
 import code.banana.todo_app.base.BaseViewModel
 import code.banana.todo_app.navigation.Destination
 import code.banana.todo_app.navigation.navigator.AppNavigator
-import code.banana.todo_app.repositories.cache.LocalCacheRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

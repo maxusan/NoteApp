@@ -20,8 +20,8 @@ fun AppNavHost(
         modifier = modifier,
         navController = navController,
         startDestination = startDestination.fullRoute,
-        enterTransition = { EnterTransition.None},
-        exitTransition = { ExitTransition.None},
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
     ) {
         splashComposable()
         tasksListComposable()
