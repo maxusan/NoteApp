@@ -67,7 +67,6 @@ fun TaskScreen(
             priorityDropdownExpanded = state.priorityDropdownExpanded,
             onPriorityDropdownClicked = viewModel::onPriorityDropdownClicked,
             dismissPriorityDropdown = viewModel::dismissPriorityDropdown,
-
             )
     }
 

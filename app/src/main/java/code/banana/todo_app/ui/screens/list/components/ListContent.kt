@@ -34,7 +34,7 @@ fun ListContent(
     if (tasks.isEmpty()) {
         EmptyContent()
     } else {
-        DisplayTasks(
+        Tasks(
             modifier = modifier,
             listState = listState,
             allTasks = tasks,
@@ -45,7 +45,7 @@ fun ListContent(
 }
 
 @Composable
-fun DisplayTasks(
+fun Tasks(
     modifier: Modifier = Modifier,
     listState: LazyListState = rememberLazyListState(),
     allTasks: List<Task>,

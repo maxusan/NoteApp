@@ -196,7 +196,6 @@ class ListScreenViewModel @Inject constructor(
 
     fun onSwitchThemeClicked() {
         viewModelScope.launch {
-            val isSystemDarkTheme = readIsSystemDarkThemeUseCase().first()
             persistIsSystemDarkModeUseCase(
                 !currentState.isSystemDarkTheme
             )

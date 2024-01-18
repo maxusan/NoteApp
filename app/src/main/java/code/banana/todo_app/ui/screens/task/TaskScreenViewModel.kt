@@ -84,8 +84,8 @@ class TaskScreenViewModel @Inject constructor(
                     insertTaskUseCase(
                         task = currentState.run {
                             Task(
-                                title = title,
-                                description = description,
+                                title = title.trim(),
+                                description = description.trim(),
                                 priority = priority,
                                 timestamp = currentState.timestamp
                             )
@@ -123,8 +123,8 @@ class TaskScreenViewModel @Inject constructor(
                         task = currentState.run {
                             Task(
                                 id = taskId,
-                                title = title,
-                                description = description,
+                                title = title.trim(),
+                                description = description.trim(),
                                 priority = priority,
                                 timestamp = timestamp
                             )
