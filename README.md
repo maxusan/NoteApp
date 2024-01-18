@@ -12,6 +12,6 @@ Features:
 - Delete All Tasks
 - Switch between themes(Dark and Light)
 
-For the UI I've used Jetpack Compose
-For the Dependency Injection I've used Dagger/Hilt
-Architecture: Clean Architecture + modified MVVM
+For the UI I've used Jetpack Compose.
+For the Dependency Injection I've used Dagger/Hilt.
+Architecture: Clean Architecture + modified MVVM.
