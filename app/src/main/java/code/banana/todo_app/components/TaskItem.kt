@@ -28,7 +28,9 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -61,9 +63,14 @@ fun TaskItem(
             it != DismissValue.DismissedToEnd
         }
     )
-    val dismissDirection = dismissState.dismissDirection
-    val isDismissed =
-        dismissState.isDismissed(DismissDirection.EndToStart)
+    val dismissDirection by remember {
+        derivedStateOf {
+            dismissState.dismissDirection
+        }
+    }
+    val isDismissed by remember {
+        derivedStateOf { dismissState.isDismissed(DismissDirection.EndToStart) }
+    }
 
 
     LaunchedEffect(isDismissed && dismissDirection == DismissDirection.EndToStart) {
@@ -126,9 +133,7 @@ fun TaskItem(
                     text = task.description,
                     modifier = Modifier.fillMaxWidth(),
                     color = MaterialTheme.colors.taskItemTextColor,
-                    style = MaterialTheme.typography.subtitle1,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
+                    style = MaterialTheme.typography.subtitle1
                 )
                 Text(
                     text = task.formattedDate,

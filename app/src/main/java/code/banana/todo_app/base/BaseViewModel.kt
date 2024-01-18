@@ -9,15 +9,14 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-abstract class BaseViewModel<State : UiState, Effect : UiEffect>() : ViewModel() {
+abstract class BaseViewModel<State : UiState, Effect : UiEffect> : ViewModel() {
 
-    private val initialState: State by lazy { createInitialState() }
     protected abstract fun createInitialState(): State
 
     protected val currentState: State
         get() = uiState.value
 
-    private val _uiState: MutableStateFlow<State> = MutableStateFlow(initialState)
+    private val _uiState: MutableStateFlow<State> = MutableStateFlow(createInitialState())
     val uiState = _uiState.asStateFlow()
 
     private val _effect: MutableSharedFlow<Effect> = MutableSharedFlow(
